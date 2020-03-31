@@ -1,0 +1,85 @@
+
+%レイアウトの定義
+\setlength{\hoffset}{0mm}
+\setlength{\voffset}{15mm}
+\setlength{\evensidemargin}{0pt}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\textwidth}{450pt}
+\setlength{\textheight}{70zw}
+\setlength{\topmargin}{-2cm}
+\setlength{\headsep}{0pt}
+
+% Font Warningを消す
+\DeclareFontShape{JY1}{mc}{m}{it}{<5> <6> <7> <8> <9> <10> sgen*min
+    <10.95><12><14.4><17.28><20.74><24.88> min10 <-> min10}{}
+\DeclareFontShape{JT1}{mc}{m}{it}{<5> <6> <7> <8> <9> <10> sgen*tmin
+    <10.95><12><14.4><17.28><20.74><24.88> tmin10 <-> tmin10}{}
+
+%「図」の左のアキの修正
+\renewcommand{\fnum@figure}{\figurename\thefigure}
+
+%キャプションのスタイルの定義
+\long\def\@makecaption#1#2{{\small
+  \advance\leftskip .5cm
+  \advance\rightskip .5cm
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{#1: #2}%
+  \ifdim \wd\@tempboxa >\hsize
+     #1: #2\par
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+\hrulefill
+\vskip\belowcaptionskip
+}}
+
+%sectionの余白を修正
+\renewcommand{\section}{\@startsection{section}{1}{\z@}%
+   {.5\Cvs \@plus.5\Cdp \@minus.2\Cdp}%
+   {.3\Cvs \@plus.3\Cdp}%
+   {\reset@font\Large\bfseries}}
+
+%subsectionの余白を修正
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+   {.5\Cvs \@plus.5\Cdp \@minus.2\Cdp}%
+   {.3\Cvs \@plus.5\Cdp}%
+   {\reset@font\large\bfseries}}
+
+%アブスト定義
+\newcommand{\@abst}{}
+\newcommand{\abst}[1]{\renewcommand{\@abst}{#1}}
+
+
+%所属
+\newcommand{\affiliation}[1]{\renewcommand*{\@affiliation}{#1}}
+\newcommand{\@affiliation}{}
+
+
+%タイトル再定義
+\def\@maketitle{%
+  \newpage\null
+  \begin{flushright} \today \end{flushright}
+  \begin{center}%
+  \let\footnote\thanks
+    {\LARGE \@title \par}%
+    \vskip 1.5em%
+    {\large
+      \lineskip .5em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 1em%
+    {\@affiliation}\\
+    \vskip 1.5em%
+    {\bf \abstractname}
+    \vskip .5em%
+    \begin{flushleft}
+    {\@abst}
+    \end{flushleft}
+    \vspace{-0.5cm}
+
+  \end{center}
+\par\vskip 1em%
+}
+
