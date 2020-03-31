@@ -6,6 +6,7 @@
 
 ## ノート
 
+* [古典核生成論の簡単なまとめ](cnt/cntnote.pdf)
 * [LSW理論のまとめ](lsw/lswnote.pdf)
 
 ## ライセンス
