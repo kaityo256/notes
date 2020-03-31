@@ -1,0 +1,581 @@
+\documentclass{jarticle}
+\usepackage{myarticle}
+
+\title{二次元結晶秩序に関するMermin-Wagnerの定理の解説}
+\author{渡辺宙志}
+\affiliation{慶応義塾大学理工学部物理情報工学科}
+
+\abst{
+Merminによる二次元粒子系に位置秩序が無いという証明
+[N. D. Mermin, Phys. Rev. {\bf 176} 250 (1968)]の解説。
+}
+
+\renewcommand{\v}[1]{{\bf #1}}
+\newcommand{\ave}[1]{\left< #1 \right>}
+\newcommand{\hr}{\hat{\rho}}
+
+\begin{document}
+
+\maketitle
+
+\hrulefill
+\tableofcontents
+\hrulefill
+
+\section{はじめに}
+
+\subsection{目的}
+
+本稿はMerminによる二次元粒子系に位置秩序が無いという証明\cite{Mermin}をフォローしたものである。
+原著論文のフォントや表式に見づらいところがあるため、見やすくなるように
+書き直した。
+原著論文とつき合わせて読むのが望ましいが、本レジュメと原著の表記は完全に対応しているわけでないことに留意して欲しい。
+間違いなどがあれば連絡をしていただければ修整する。
+
+\subsection{物質の三相について}
+
+物質には固体、液体、気体の三相があることが知られているが、
+これらの定義となるとあいまいな人も多いのでは無いだろうか。
+まず、これらは大きく固体(Solid)と流体(Fluid)に分けることができる。
+外から力(Shear)をかけた時に、有限の抵抗をするのが固体、
+無限小の力でいくらでも変形が可能であるのが流体であり、
+この意味で液体(Liquid)と気体(Gas)は区別されない。
+また、我々は固体イコール結晶(Crystal)と思いがちであるが、
+結晶は、粒子の位置が長距離秩序を持っていることであり、固体(Solid)とは
+別の定義を持つ。
+
+ここで紹介する「短距離相互作用をする二次元粒子系が長距離位置秩序を持たない」
+というMerminの証明は、「結晶」を禁止するものであって、
+「固体」を禁止するもので無いことに注意したい。
+
+
+\subsection{証明のポイント}
+
+この証明は、基本的にBogoliubov不等式の応用である。
+ただ、他の系(主に格子スピン系)への応用と異なり、相互作用をする
+相手の数が固定されていないため、証明は簡単ではない。
+この証明は一般的なものであり、たとえばポテンシャルの調和近似などは
+行っていない。ただし、適用できる粒子系の
+相互作用ポテンシャルにいくつか条件がつく。この条件はかなりゆるい条件であり、
+だいたいのポテンシャル(たとえばLennard-Jones粒子など)には
+当てはまるが、剛体円盤では適用してよいかが非自明である。
+
+\subsection{証明の流れ}
+
+粒子数$N$の二次元粒子系を考える。
+粒子の密度のFourier変換 $\rho_{\bf k}$について、
+もし位置秩序があるのであれば、
+熱力学極限$(N \rightarrow \infty)$においても
+これが有限に残る、すなわち
+\begin{equation}
+  \lim_{N \rightarrow \infty} \rho_{\bf K} \ne 0
+\end{equation}
+となる逆格子ベクトル${\bf K}$が最低一つは存在するはずである。
+したがって、全ての${\bf k}$について$\displaystyle \lim_{N \rightarrow \infty} \rho_{\bf k} = 0$と
+なることを示すのが証明の目的となる。
+
+証明にはSchwartzの不等式、
+\begin{equation}
+  \ave{|A|^2}\ave{|B|^2} \ge |\ave{A B}|^2
+\end{equation}
+を用いる。ただし、$\ave{\cdots}$は熱力学平均を表す。
+この式の$A$及び$B$に適切な式を代入し、様々な(近似ではない)評価を行って
+\begin{equation}
+  C \ge \sum_{\v{k}} \frac{\rho_{\bf K}^2}{k^2}
+\end{equation}
+まで変形する。ただし、$\bf{K}$は逆格子ベクトル、
+$C$は熱力学極限を取ったときに、ある定数に収束するような関数である。
+$N$が大きい場合、右辺の和は積分となり、分母が対数発散する。
+ところが左辺は有限であるから、分子である$\rho_{\bf K}$が
+対数以上の速さで0にならなければならない。
+以上が、二次元粒子系で位置秩序が無い証明の流れである。
+
+\section{調和ポテンシャルの場合}
+
+一般の場合に比べ、粒子のポテンシャルが調和ポテンシャルの場合、計算はかなり簡単になる。
+計算の筋道を追いやすくするため、まずは調和ポテンシャルの場合を考えよう\cite{Jancovici}。
+
+粒子の位置を$\v{r}_i$とする。平衡状態の位置を$\v{R}_i$、平衡からのずれを
+$\v{u}_i$とすると、
+$$
+  \v{r}_i = \v{R}_i + \v{u}_i
+$$
+である。さて、系の密度分布$\rho(\v{r})$はデルタ関数の和
+$$
+  \rho(\v{r}) = \sum_{i=1}^{N} \delta(\v{r} - \v{r}_i)
+$$
+として表すことができる。密度分布をFourier変換し、波数空間で表現すると、
+\begin{eqnarray}
+  \hat{\rho}_{\v{k}} &=& \int \mbox{d} \v{r} \exp{(i \v{k} \cdot \v{r})} \rho(\v{r})\\
+  &=& \sum_i \exp{(-i \v{k} \cdot \v{r}_i)}
+\end{eqnarray}
+となる。和の中身は$O(1)$の量であるから、秩序があれば全体として$O(N)$となるだろう。
+そこで、熱力学平均を取った上で粒子数$N$で割った量を$\rho_{\v{K}}$とあらわす。
+すなわち、
+\begin{eqnarray}
+  \rho_{\v{K}} &=& \frac{1}{N} \ave{\hat{\rho}_{\v{K}}} \nonumber \\
+  &=& \frac{1}{N} \ave{\sum_i \exp{(-i \v{K} \cdot \v{r}_i)}} \nonumber \\
+  &=& \frac{1}{N} \ave{\sum_i \exp{(-i \v{K} \cdot \v{u}_i)}} \label{eq_posorder}
+\end{eqnarray}
+を得る。ここで逆格子ベクトルの定義から$\v{K}\cdot \v{R}_i = 0 $を用いた。
+式(\ref{eq_posorder})がスピン系の自発磁化にあたる量、すなわち秩序変数(order parameter)となる。
+平衡位置からのずれ$\v{u}_i$の$x$成分、$y$成分ともにガウス分布をしているとすれば、
+\begin{equation}
+  \rho_{\v{K}} =  \exp{\left( -1/2 \ave{(\v{K} \cdot \v{u}_i )^2} \right)} \label{eq_exprho}
+\end{equation}
+となる。
+ここで、$\v{u}_i$のFourier変換 $\v{v}_{\v{k}}$を考えよう。
+$\v{u}_i$は$\v{v}_{\v{k}}$を用いて、
+\begin{equation}
+  \v{u}_i = N^{-1/2} \sum_{\v{k}} \exp{(i \v{k} \cdot \v{R}_i)} \v{v}_{\v{k}} \label{eq_uf}
+\end{equation}
+とあらわすことができる。
+ここで、波数ベクトル$\v{k}$に対応する周波数を$\omega_{\v{k}}$とすると、
+エネルギー等分配則から、
+\begin{equation}
+  \frac{1}{4} \omega_{\v{k}}^2 \ave{|\v{v}_{\v{k}}|^2} = \frac{1}{2} \beta^{-1} \label{eq_equip}
+\end{equation}
+が成り立つであろう。ただし、$\beta \equiv 1/k_B T$であり、等方的であるとした。
+式(\ref{eq_uf})、(\ref{eq_equip})より、
+\begin{equation}
+  \ave{(\v{K} \cdot \v{u}_i)^2 } = \frac{\beta^{-1} K^2}{4 \pi^2 m} \int \mbox{d}^2 k \frac{1}{\omega_{\v{k}}^2}
+  \label{eq_ave}
+\end{equation}
+が得られる。ここで、十分小さい波数においては$\omega_{\v{k}} \sim ck$と
+振舞うであろう($c$は系の音速)。したがって、
+式(\ref{eq_ave})の右辺の積分は発散するので、式(\ref{eq_exprho})に
+代入した結果 $\rho_{\v{K}}$がゼロになる。
+発散の様子を見ると、十分大きな粒子数$N$において
+\begin{equation}
+  \int \mbox{d}^2 k \frac{1}{\omega_{\v{k}}^2} \sim \log{N}
+\end{equation}
+と振舞うはずである。
+したがって、これを式(\ref{eq_exprho})に代入すれば、
+\begin{eqnarray}
+  \rho_{\v{K}} &=&  \exp{\left( -1/2 \ave{(\v{K} \cdot \v{u}_i )^2} \right)} \nonumber \\
+  & = & \exp{\left( \alpha K^2 \log{\sqrt{N}}  \right)} \quad (\alpha^{-1} \equiv 4 \pi^2 m \beta) \nonumber \\
+  &=& N^{- \alpha K^2}
+\end{eqnarray}
+であり、粒子数に対してベキ的に秩序が押さえ込まれた。
+
+\section{Merminによる証明}
+
+\subsection{証明の前半}
+
+それでは一般の二体ポテンシャル$\Phi(\v{r})$で相互作用する二次元粒子系を考えよう。
+系が結晶を組んでいる場合、ふたつの基本ベクトル$\v{a}_1$と$\v{a}_2$によって
+結晶系が張られているであろう。以下では、二つの整数$N_1$と$N_2$を用いて
+系が$N_1\v{a}_1$と$N_2\v{a}_2$で張られた平行四辺形の中にあるとする。
+したがって粒子数は$N=N_1 N_2$である。
+
+境界条件は、固定境界条件とする。すなわち、粒子は平行四辺形の形をした
+ポテンシャル無限大の壁に閉じ込められている。
+証明の形は、境界条件に依存するが、
+粒子系の自由エネルギーの収束条件が、固定境界でしか
+証明されていないことから、周期境界ではなく固定境界を用いる
+(不等式の評価に自由エネルギーが定義できることを用いるため)。
+
+粒子$i$の位置を$\v{r}_i$とすると、整数$n_1,n_2$を用いて
+$\v{r}_i = n_1 \v{a}_1 + n_2 \v{a}_2$と表されるであろう。
+系の密度分布$\rho(\v{r})$はデルタ関数の和
+$$
+  \rho(\v{r}) = \sum_{i=1}^{N} \delta(\v{r} - \v{r}_i)
+$$
+として表すことができる。
+調和ポテンシャルの場合と同様に密度分布をFourier変換し、
+\begin{equation}
+  \rho_{\v{k}} = \frac{1}{N} \ave{\hat{\rho}_{\v{k}}}
+  \label{eq_fourie}
+\end{equation}
+を秩序変数とする。
+ただし、
+\begin{eqnarray}
+  \hat{\rho}_{\v{k}} &=& \int \mbox{d} \v{r} \exp{(i \v{k} \cdot \v{r})} \rho(\v{r})\\
+  &=& \sum_i \exp{(-i \v{k} \cdot \v{r}_i)}
+\end{eqnarray}
+である。さらにここで用いる$\v{k}$は、
+\begin{equation}
+  \v{b}_i \cdot \v{a}_j = 2\pi \delta_{ij}
+\end{equation}
+を満たす基本逆格子ベクトル$\v{b}_1, \v{b}_2$の線形和、
+\begin{equation}
+  \v{k} = m_1 \v{b}_1 + m_2 \v{b}_2
+\end{equation}
+と表されるものとする($m_1,m_2$は整数)。
+
+式\ref{eq_fourie}の右辺の$\ave{\cdots}$は熱力学平均を表すが、
+念のため定義を以下に記す。
+運動エネルギーの寄与を無視すると、
+系の内部エネルギー$U(\{ \v{r}_i \})$は
+粒子間相互作用によるものだけであり、
+ポテンシャルを用いて
+\begin{equation}
+  U(\{ \v{r}_i \}) = \frac{1}{2} \sum_{i \neq j} \Phi(\v{r}_i - \v{r}_j)
+\end{equation}
+と表される。この$U$を用いて、系の分配関数は
+\begin{equation}
+  Z = \int \mbox{d} \v{r}_1 \cdots \mbox{d}\v{r}_N
+  \exp{(-\beta U)}
+\end{equation}
+と書ける。ただし、積分は系の内部(この場合は平行四辺形)について行う。
+この分配関数から熱力学平均$\ave{\cdots}$を以下のように定義できる。
+\begin{equation}
+  \ave{f} = \frac{1}{Z} \int \mbox{d} \v{r}_1 \cdots \mbox{d}\v{r}_N
+  \exp{(-\beta U)} f
+\end{equation}
+すなわち、粒子の位置の関数$f(\{ \v{r}_i \})$を、その粒子の位置での
+エネルギーをボルツマン重みとして、取りうる位置すべてで平均したものが
+$\ave{f}$である。
+
+結晶格子が存在する場合、
+逆格子ベクトルの一つ$\v{K}$を用いると、
+熱力学極限において、
+\begin{equation}
+  \rho_{\v{K}} \neq 0
+\end{equation}
+となるはずである。ただし、熱力学極限とは
+$\lim N_1, N_2 \rightarrow \infty$とすることに対応する。
+本証明の目的は二次元以下で結晶秩序が無いことを示すことであるから、
+以下で$\rho_{\v{K}} = 0$を証明する。
+
+証明にはSchwartzの不等式、
+\begin{equation}
+  \ave{|A|^2} \ge \frac{|\ave{A \cdot B}|}{\ave{|B|^2}}
+  \label{eq_schwartz}
+\end{equation}
+を用いる。
+
+ここで、
+\begin{eqnarray}
+  \psi_i &=& e^{-i(\v{k} + \v{K}) \cdot \v{r}_i} \\
+  \phi_i &=& \sin{(\v{k} \cdot \v{r}_i)}
+\end{eqnarray}
+を用いて
+\begin{eqnarray}
+  A(\{\v{r}_i \}) &=& \sum \psi_i\\ \label{eq_defA}
+  B(\{\v{r}_i \}) &=& -\beta^{-1} e^{\beta U} \sum \nabla_i (\phi_i) \label{eq_defB}
+\end{eqnarray}
+と定義しよう\footnote{
+  なんでこんなものを代入しようと思いついたのかが不思議である。
+}。ただし、和は$i=1$から$N$までとるものとする。
+
+式(\ref{eq_defA})及び(\ref{eq_defB})を、式(\ref{eq_schwartz})へ代入し、
+系の表面で$\phi = 0$となることを利用して部分積分をすると、
+\begin{equation}
+  \ave{|\sum \psi_i |^2} \le
+  \frac{\beta^{-1} |\ave{ \sum \phi \nabla_i \psi_i }|^2 }
+  {
+    \ave{
+      \frac{1}{2}\sum \nabla^2 \Phi(\v{r}_i-\v{r}_j) |\phi_i-\phi_j|^2
+      + \beta^{-1} \sum | \nabla \phi_i|^2
+    }
+  }
+  \label{eq_ineq}
+\end{equation}
+を得る。ちなみに、この不等式が成り立つ条件は
+$\psi,\phi$ともに微分可能な連続関数で、系の表面(Boundary)において
+$\phi(\v{r}) = 0$であることである。後者の条件は、$\v{k}$の条件と$\phi$の定義により
+自動的に成り立っている。
+
+この式を、$\rho(\v{k})$を使って表そう。
+まず、左辺は
+\begin{eqnarray}
+  \sum \psi_i &=& \sum_i \exp{(-i (\v{k}+\v{K}) \cdot \v{r}_i)} \\
+  &=& \hat{\rho}(\v{k}+\v{K})
+\end{eqnarray}
+より、
+\begin{eqnarray}
+  \ave{| \sum \psi_i |^2} &=& \ave{\hat{\rho}^*(\v{k}+\v{K}) \hat{\rho}(\v{k}+\v{K})}\\
+  & = & \ave{\hat{\rho}(-\v{k}-\v{K}) \hat{\rho}(\v{k}+\v{K})}
+\end{eqnarray}
+
+同様に、右辺は
+\begin{equation}
+  \frac{
+  1/4 \beta^{-1} \left( \v{k} + \v{K} \right)^2
+  \left|
+  \ave{ \rho(\v{K})-\rho(\v{K}+2\v{k}) }
+  \right|^2
+  }{
+  1/2 \sum
+  \ave{
+    \nabla^2 \Phi_{ij}
+    (
+    \sin{ \v{k} \cdot \v{r}_i} - \sin{\v{k}\cdot \v{r}_j}
+    )^2
+  }
+  + \beta^{-1} k^2 \ave{\sum \cos^2{\v{k}\cdot\v{r}_i}}
+  }
+  \label{eq_bigfrac}
+\end{equation}
+となる。以下、この不等式を評価していくことになる。
+
+まず、式(\ref{eq_bigfrac})の右辺の分母にある
+$\cos^2{\v{k}\cdot\v{r}_i}$は、常に
+$\cos^2{\v{k}\cdot\v{r}_i} \le 1$であるから、
+1で置き換えても不等号は変わらない(分母が大きくなる)。
+したがって、
+$\ave{\sum_i^N \cos^2{\v{k}\cdot\v{r}_i}}$を$N$で置き換える。
+
+さらに、不等式
+\begin{equation}
+  (\sin{ \v{k} \cdot \v{r}_i} - \sin{\v{k}\cdot \v{r}_j})^2 \le k^2 (\v{r}_i-\v{r}_j)^2
+\end{equation}
+により、最終的に式(\ref{eq_ineq})は、
+\begin{equation}
+  \ave{\hat{\rho}(-\v{k}-\v{K}) \hat{\rho}(\v{k}+\v{K})}
+  \le
+  \frac{
+    1/4 \beta^{-1} (\v{k} - \v{K})^2
+    \left( \hr(\v{K})-\hr(\v{K}+2\v{k}) \right)^2
+  }{
+    k^2 \left(
+    N \beta^{-1} + 1/2 \sum \ave{|\nabla^2 \Phi(\v{r}_i-\v{r}_j)| (\v{r}_i-\v{r}_j)^2}
+    \right)
+  }
+  \label{eq_bigfrac2}
+\end{equation}
+というやや複雑な式になる。
+
+\subsection{修正ポテンシャル}
+\label{sec_modpotential}
+
+まず、式(\ref{eq_bigfrac2})の右辺の分母の第二項
+\begin{equation}
+  \ave{D(\{ \v{r}_i \})} \equiv \ave{\frac{1}{2} \sum |\nabla^2 \Phi(\v{r}_i-\v{r}_j)| (\v{r}_i-\v{r}_j)^2}
+  \label{eq_defD}
+\end{equation}
+を評価するため、もとのポテンシャルからちょっとずれた修正ポテンシャル$\Phi_{\lambda}$を
+\begin{equation}
+  \Phi_\lambda(\v{r})= \Phi(\v{r}) - \lambda r^2 |\nabla^2 \Phi(\v{r})|
+\end{equation}
+と定義する。この修正ポテンシャルを用いて熱力学平均を
+\begin{equation}
+  \ave{f}_\lambda = \frac{1}{Z_\lambda} \int \mbox{d} \v{r}_1 \cdots \mbox{d}\v{r}_N \exp{(-\beta U_\lambda)} f
+\end{equation}
+と定義しよう。
+ただし、修正された内部エネルギー$U_\lambda$は
+\begin{eqnarray}
+  U_\lambda(\{ \v{r}_i \}) &=& \frac{1}{2} \sum_{i \neq j} \Phi_\lambda(\v{r}_i - \v{r}_j)\\
+  &=& \frac{1}{2} \sum_{i \neq j} \Phi(\v{r}_i - \v{r}_j) -
+  \frac{1}{2} \lambda \sum_{i \neq j} (\v{r}_i - \v{r}_j)^2 |\nabla^2 \Phi(\v{r}_i-\v{r}_j)| \\
+  &=& U - \lambda D
+\end{eqnarray}
+であり、$Z_\lambda$はこの系の分配関数
+\begin{equation}
+  Z_\lambda = \int \mbox{d} \v{r}_1 \cdots \mbox{d}\v{r}_N \exp{(-\beta U_\lambda)}
+\end{equation}
+である。
+
+この修正ポテンシャルで相互作用する系の自由エネルギーを$F_\lambda$とすれば、
+\begin{eqnarray}
+  F_\lambda &=& - \beta^{-1} \ln Z_\lambda \\
+  &=& - \beta^{-1} \int \mbox{d} \v{r}_1 \cdots \mbox{d}\v{r}_N \exp{(-\beta (U-\lambda D))}
+\end{eqnarray}
+であるので、両辺$\lambda$で偏微分すると、
+\begin{eqnarray}
+  \frac{\partial}{\partial \lambda} F_\lambda &=& - \beta^{-1} \int \mbox{d} \v{r}_1 \cdots \mbox{d}\v{r}_N D \exp{(-\beta (U-\lambda D))} \\ \nonumber
+  &=& - \ave{D}_\lambda \le 0 \label{eq_partialF}
+\end{eqnarray}
+である。すなわち$F_\lambda$は、$\lambda$に関して増加関数であるので、
+任意の$\lambda > 0$に対して、
+$F_0 > F_\lambda$が成り立つ。
+さらに、
+\begin{equation}
+  \frac{\partial}{\partial \lambda} \ave{D}_\lambda
+  = \beta \ave{\left(D-\ave{D}_\lambda\right)^2 }_\lambda \ge 0
+\end{equation}
+より、$\ave{D}_\lambda$は$\lambda$に関して増加関数である。
+以上より、式(\ref{eq_partialF})を両辺$\lambda$で積分することで、
+\begin{equation}
+  F_0 - F_\lambda = \int_0^{\lambda} \mbox{d}\mu \ave{D}_\mu \ge \lambda \ave{D}_0 \ge 0
+  \label{eq_Fdiff}
+\end{equation}
+であることがわかる\footnote{
+  $\ave{D}_\lambda$は$\lambda$に関して増加関数なので、
+  積分の中を$\ave{D}_0$で置き換えても
+  不等号の向きは変わらない。すると被積分関数が定数であるから積分を実行できて、
+  $\ave{D}$の上限を自由エネルギーで抑えることができる。
+  そして、自由エネルギーが示量性であることから$\ave{D}/N$を
+  定数で押さえ込む、というのが全体のロジックである。}
+。$\ave{D}_0$がもともと評価したかった式(\ref{eq_defD})の
+$\ave{D}$である。
+
+さて、自由エネルギー$F_\lambda$は、粒子数が大きい極限で示量性であるべき量であるから、
+\begin{equation}
+  \lim_{N \rightarrow \infty} F_\lambda \sim f_\lambda N
+\end{equation}
+と、粒子数に比例するべきである。ただし$f_\lambda$は有限の数である。
+式(\ref{eq_Fdiff})の両辺を$N\lambda$で割れば
+\begin{equation}
+  (f_0 - f_\lambda)/\lambda \ge \frac{1}{N}\ave{D}
+\end{equation}
+であるので、これを用いて、式(\ref{eq_bigfrac2})より、\footnote{
+  両辺を$N$で割っている。
+}
+\begin{equation}
+  \frac{1}{N}
+  \ave{\hat{\rho}(-\v{k}-\v{K}) \hat{\rho}(\v{k}+\v{K})}
+  \le
+  \frac{
+    1/4 \beta^{-1} (\v{k} - \v{K})^2
+    \left( \hr(\v{K})-\hr(\v{K}+2\v{k}) \right)^2
+  }{
+    k^2  C
+  }
+  \label{eq_bigfrac3}
+\end{equation}
+を得る。ただし、$\beta^{-1} + (f_0 - f_\lambda)/\lambda$は定数なので、
+\begin{equation}
+  C \equiv \beta^{-1} + (f_0 - f_\lambda)/\lambda
+\end{equation}
+と表記した。
+
+\subsection{ポテンシャルへの制限}
+
+前節でポテンシャル及び修正ポテンシャルによる
+熱力学平均$\ave{\cdots}_\lambda$が収束するという仮定を置いたが、その仮定により
+ポテンシャルに制限がつく\cite{Fisher}。その制限とは
+\begin{eqnarray}
+  \Phi_\lambda(r) &\sim& 1/r^{2+|\varepsilon|}, \qquad r \rightarrow \infty,\\
+  \Phi_\lambda(r) &>& 1/r^{2+|\varepsilon|}, \qquad r \rightarrow 0
+\end{eqnarray}
+である。すなわち、遠距離においては$r^2$より早く減衰し、近距離においては
+$r^2$より早く発散するようなポテンシャルを要求する。
+$\lambda = 0$の場合がもとのポテンシャルだが、もとのポテンシャルは
+この条件を満たしているであろうから、
+結局この条件はある$\lambda>0$について
+\begin{eqnarray}
+  \nabla^2 \Phi(r) &\sim& 1/r^{4+|\varepsilon|}, \qquad r \rightarrow \infty,\\
+  \Phi(r) - \lambda r^2  |\nabla^2 \Phi(r)| &>& 1/r^{2+|\varepsilon|}, \qquad r \rightarrow 0,
+\end{eqnarray}
+を課すことになる。この条件を満たすポテンシャル$\Phi(r)$について
+以下の議論が進む。
+
+\subsection{証明の残り}
+
+式(\ref{eq_bigfrac3})の両辺に中心が$0$の
+正のガウス分布、$g(\v{k}+\v{K})$をかける。そして
+両辺$\v{k}$について和を取る。すると
+\begin{equation}
+  \frac{1}{N}
+  \sum_{\v{q}} g(\v{q}) \ave{\rho_{\v{q}}\rho_{-\v{q}}}
+  \ge
+  \frac{
+    1/4 \beta^{-1} \displaystyle\sum_{\v{k}} g(\v{k}+\v{K})(\v{k} - \v{K})^2
+    \left( \hr(\v{K})-\hr(\v{K}+2\v{k}) \right)^2
+  }{
+    k^2  C
+  }
+\end{equation}
+を得る。ただし、左辺については$\v{q} \equiv \v{k} +\v{K}$と表記した。
+この式の右辺の、和の中身は常に正であるから、
+和を取る範囲を、最小の逆格子ベクトル$\v{K}_0$の半分未満に制限しても
+不等号の向きは変わらない。この制限により、熱力学極限において$\hr(\v{K}+2\v{k})=0$
+となる。したがって、
+\begin{equation}
+  \frac{1}{N}
+  \sum_{\v{q}} g(\v{q}) \ave{\rho_{\v{q}}\rho_{-\v{q}}}
+  \ge
+  \frac{
+    1/16 \beta^{-1} K^2 g(K_0/2)\hr_{\v{K}}^2
+  }{
+    C
+  } \sum_{\v{k}<\v{K}_0/2} \frac{1}{k^2}
+  \label{eq_gauss}
+\end{equation}
+を得る。$1/16 \beta^{-1} K^2 g(K_0/2)$は($N$に関して)
+定数であるから、分母の$C$とあわせて、
+\begin{equation}
+  \frac{1}{N}
+  \sum_{\v{q}} g(\v{q}) \ave{\rho_{\v{q}}\rho_{-\v{q}}}
+  \ge
+  \hr_{\v{K}}^2 C' \sum_{\v{k}<\v{K}_0/2} \frac{1}{k^2}
+\end{equation}
+と表記する。ただし、
+$C' \equiv 1/16 \beta^{-1} K^2 g(K_0/2)\hr_{\v{K}}^2/C$である。
+
+あとは、式(\ref{eq_gauss})の左辺が熱力学極限である定数に収束することを示せば、
+右辺を押さえ込むことができる。
+\begin{equation}
+  \hr_{\v{q}} = \sum_i \mbox{e}^{-i \v{q}\cdot\v{r}_i}
+\end{equation}
+であったから、
+\begin{eqnarray}
+  \hr_{\v{q}}\hr_{-\v{q}} &=& \sum_i \sum_j \mbox{e}^{-i \v{q}\cdot\v{r}_i} \mbox{e}^{i \v{q}\cdot\v{r}_j} \\
+  &=& N + \sum_{i \neq j} \mbox{e}^{-i \v{q}\cdot(\v{r}_i-\v{r}_j)}
+\end{eqnarray}
+である。ここで、新たなポテンシャル$\Psi(\v{r})$を
+\begin{equation}
+  \Psi(\v{r}) = \int \frac{\mbox{d}\v{q}}{(2\pi)^2} g(\v{q}) \mbox{e}^{i \v{q}\cdot\v{r}}
+\end{equation}
+と定義すると、式(\ref{eq_gauss})の左辺は
+\begin{equation}
+  \frac{1}{N} \sum_{\v{q}} g(\v{q}) \ave{\hr_{\v{q}}\hr_{-\v{q}}}
+  =
+  \Psi(0) + \frac{1}{N} \sum_{i \neq j} \ave{\Psi(\v{r}_i-\v{r}_j)}
+  \label{eq_Psi}
+\end{equation}
+と書き換えることができる。
+式(\ref{eq_Psi})の第一項、$\Phi(0)$は定数であるし、第二項は
+\ref{sec_modpotential}節と同様な議論により、このポテンシャルで相互作用する
+自由エネルギーを定義し、その差として押さえ込める。
+ただし、\ref{sec_modpotential}節の場合と異なり、ガウス分布なので
+$\Phi$が熱力学平均を持てば$\Psi$による平均も存在するため、ここで
+ポテンシャルに新たな制限はつかない。
+以上から、
+\begin{equation}
+  C'' \ge \rho_{\v{K}}^2 \sum_{\v{k}<\v{K}_0/2} \frac{1}{k^2}
+  \label{eq_last}
+\end{equation}
+を得た。ただし
+$C'' = 1/C' \left(\Psi(0) + \frac{1}{N} \sum_{i \neq j} \ave{\Psi(\v{r}_i-\v{r}_j)}\right)$
+であり、$C'$、$C''$ともに熱力学極限で定数に収束する。
+式(\ref{eq_last})の和が二次元なので二重積分であることに気をつけて、
+さらに$N_1$及び$N_2$がともに$N^{1/2}$のオーダーであれば、
+\begin{equation}
+  \rho_{\v{K}} \le \frac{1}{\sqrt{\ln{N}}}
+\end{equation}
+を得る。
+一次元の場合は、一重積分であるから、
+\begin{equation}
+  \rho_\v{K} \le \frac{1}{\sqrt{N}}
+\end{equation}
+となる。
+
+\section{まとめ}
+
+以上を簡単にまとめてみよう。
+証明に、熱力学平均が定義できることと、
+自由エネルギーが示量性であることを用いているので、
+適用できる系の相互作用ポテンシャルに制限がつく。
+したがって、自己重力系のような$1/r$ポテンシャルには
+この証明は適用できないし、微分不可能なポテンシャルを持つ
+剛体粒子には適用できるかどうかも非自明である。
+
+自由エネルギーが定義できるような系においても、
+証明でちょっとずらしたポテンシャル$\Phi_{\lambda}$による
+熱力学平均が収束する条件が必要である。
+しかし、こちらは普通のポテンシャル(たとえばLennard-Jones PotentialやHertzian contact force)
+なら通常満たすであろう。
+
+さらに、熱力学極限を取ったときに分母が発散するので
+$\rho_{\v{K}}$、すなわちBragg ピークの大きさが制限を受ける、というのが
+証明の結果だが、発散が対数発散という遅い発散なので、
+Bragg ピークも対数的に小さくなる程度の弱い制限しか受けない。
+したがって、天文学的に大きな系で無い限り、Braggピークは実験的に観測できるだろう。
+この制限の弱さは、別の秩序、たとえば配向秩序(directional order)をゆるす。
+したがって、二次元粒子系において隣接配向秩序(Bond-orientational Order)が
+長距離秩序を持つというKosterlitz-Thouless-Halperin-Nelson-Young理論は
+Merminの定理と矛盾しない。
+
+一般のポテンシャルの場合は粒子数に対して対数的に秩序が制限されたが、
+調和ポテンシャルの場合はベキ的に制限される。このように、
+条件を絞れば秩序に関するより厳しい制限を得る。
+
+\begin{thebibliography}{99}
+  \bibitem{Jancovici} B. Jancovici, Phys. Rev. Lett. {\bf 19} 20 (1967).
+  \bibitem{Mermin} N. D. Mermin, Phys. Rev. {\bf 176} 250 (1968).
+  \bibitem{Fisher} M. E. Fisher, Arch. Rational Mech. Anal. {\bf 17}, 337 (1964).
+\end{thebibliography}
+\end{document}

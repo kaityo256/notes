@@ -8,6 +8,7 @@
 
 * [古典核生成論の簡単なまとめ](cnt/cntnote.pdf)
 * [LSW理論のまとめ](lsw/lswnote.pdf)
+* [二次元結晶秩序に関するMermin-Wagnerの定理の解説](mermin/mermin.pdf)
 
 ## ライセンス
 
