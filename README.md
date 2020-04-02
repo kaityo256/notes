@@ -16,6 +16,8 @@
   * 回転液滴の平衡形状についてChandrasekharの導出を追う。
 * [一様乱数を使う](prob/prob.pdf)
   * 一様乱数から様々な確率密度関数に従う確率変数を作る
+* [熱浴法とMetropolis法の棄却率](metropolis/metropolis.pdf)
+  * 二準位系と三準位系で熱浴法とMetropolis法の平均棄却率を比較する。
 
 ## ライセンス
 
