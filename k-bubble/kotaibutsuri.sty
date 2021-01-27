@@ -1,0 +1,177 @@
+%---------------------------------------------------------------------------
+\usepackage{xcolor}
+\usepackage{amsmath}
+\setlength{\textwidth}{46zw}
+\newcommand{\crule}[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
+\newcommand{\gray}[1]{\color[rgb]{#1,#1,#1}}
+
+%---------------------------------------------------------------------------
+% セクション、図番号再定義
+%---------------------------------------------------------------------------
+
+\renewcommand{\thesection}{\S \arabic{section}}
+\renewcommand{\thesubsection}{~~~\arabic{section}.\arabic{subsection}}
+\renewcommand{\fnum@figure}{\textbf{第 \thefigure 図}}
+
+%---------------------------------------------------------------------------
+% オプション定義
+%---------------------------------------------------------------------------
+
+\newcommand{\maketop}{\kaisetsu@top}
+
+\newcommand{\kaisetsu}{
+	\renewcommand{\maketop}{\kaisetsu@top}
+}
+\newcommand{\jikkensitsu}{
+	\renewcommand{\maketop}{\jikkensitsu@top}
+}
+\newcommand{\topics}{
+	\renewcommand{\maketop}{\topics@top}
+}
+\newcommand{\salon}{
+	\renewcommand{\maketop}{\salon@top}
+}
+
+\DeclareOption{kaisetsu}{\kaisetsu}
+\DeclareOption{jikkensitsu}{\jikkensitsu}
+\DeclareOption{topics}{\topics}
+\DeclareOption{salon}{\salon}
+\ProcessOptions\relax
+
+%---------------------------------------------------------------------------
+% トップ図作成
+%---------------------------------------------------------------------------
+\definecolor{mygray1}{rgb}{0.9,0.9,0.9}
+\definecolor{mygray2}{rgb}{0.8,0.8,0.8}
+\definecolor{mygray3}{rgb}{0.7,0.7,0.7}
+
+\newcommand{\kaisetsu@top}{
+	\begin{picture}(0,0)(0,0)
+		\put(0,2){\mbox{\Large \bf 解説}}
+		\put(30,2){\crule[mygray2]{5mm}{3mm}}
+		\put(44,2){\crule[mygray1]{126mm}{3mm}}
+		\put(400,2){\crule[mygray3]{4.8mm}{3mm}}
+	\end{picture}\\
+}
+
+\newcommand{\jikkensitsu@top}{
+	\begin{picture}(0,0)(0,0)
+		\put(0,2){\crule[mygray2]{145mm}{3mm}}
+		\put(51,2){\crule[mygray1]{122mm}{3mm}}
+		\put(2,6){\crule[white]{144mm}{0.3mm}}
+		\put(0,2){\mbox{\Large \bf 実験室}}
+	\end{picture}\\
+}
+
+\newcommand{\topics@top}{
+	\begin{picture}(0,0)(0,0)
+		\put(0,2){\mbox{\Large \bf トピックス}}
+		\put(67,2){\crule[mygray2]{4mm}{3mm}}
+		\put(77,2){\crule[mygray1]{114mm}{3mm}}
+		\put(400,2){\crule[mygray3]{4.8mm}{3mm}}
+	\end{picture}\\
+}
+
+\newcommand{\salon@top}{
+	\begin{picture}(0,0)(0,0)
+		\put(0,2){\mbox{\Large \bf サロン}}
+		\multiput(47,2)(31,0){12}{
+			\begin{picture}(0,0)(0,0)
+				\put(0.00,2.90){\gray{0.45} \rule{0.94mm}{0.60mm}}
+				\put(3.14,2.60){\gray{0.50} \rule{0.94mm}{0.90mm}}
+				\put(6.29,2.30){\gray{0.55} \rule{0.94mm}{1.20mm}}
+				\put(9.43,2.00){\gray{0.60} \rule{0.94mm}{1.50mm}}
+				\put(12.57,1.70){\gray{0.65} \rule{0.94mm}{1.80mm}}
+				\put(15.71,2.00){\gray{0.70} \rule{0.94mm}{1.50mm}}
+				\put(18.86,2.30){\gray{0.65} \rule{0.94mm}{1.20mm}}
+				\put(22.00,2.60){\gray{0.60} \rule{0.94mm}{0.90mm}}
+				\put(25.14,2.90){\gray{0.55} \rule{0.94mm}{0.60mm}}
+				\put(28.29,3.20){\gray{0.50} \rule{0.94mm}{0.30mm}}
+			\end{picture} 
+		}
+	\end{picture}\\
+}
+
+%---------------------------------------------------------------------------
+% タイトル関連
+%---------------------------------------------------------------------------
+
+\newcommand{\@subtitle}{}
+\newcommand{\subtitle}[1]{\renewcommand{\@subtitle}{#1}}
+
+
+\renewcommand{\@maketitle}{%
+	\newpage
+	\null
+	%\let\footnote\thanks
+	\vspace{-2.0cm} 
+	\maketop
+	\vskip 0.0em%
+	\begin{center}
+		{\LARGE  {\@title}}\\
+		{\Large  {\@subtitle}}%
+	\end{center}
+	\vskip 0.5em%
+	\begin{flushright}
+		{\small \@affiliation}
+		\hspace{0.4zw}~
+		{\large \@author}
+		\hspace{0.7zw}~
+	\end{flushright}
+	\vskip 0.7em%
+}
+
+\newcommand{\@affiliation}{}
+\newcommand{\affiliation}[1]{\renewcommand*{\@affiliation}{#1}}
+
+\newcommand{\@articlevolume}{70}
+\newcommand{\@articlenumber}{45}
+\newcommand{\@articleyear}{\the\year}
+
+\newcommand{\startpage}[1]{\setcounter{page}{#1}}
+\newcommand{\articlevolume}[1]{\renewcommand{\@articlevolume}{#1}}
+\newcommand{\articlenumber}[1]{\renewcommand{\@articlenumber}{#1}}
+\newcommand{\articleyear}[1]{\renewcommand{\@articleyear}{#1}}
+\newcommand{\@starttotalpage}{400}
+\newcommand{\starttotalpage}[1]{
+	\renewcommand{\@starttotalpage}{#1}
+}
+
+%---------------------------------------------------------------------------
+% 参考文献
+%---------------------------------------------------------------------------
+\renewcommand{\@cite}[2]{$^{\hbox{\scriptsize{#1)\if@tempswa , #2\fi}}}$}
+\renewcommand{\@biblabel}[1]{{#1)}}
+
+\renewcommand{\refname}{
+	\begin{center}{
+		\fontsize{11pt}{25pt}\selectfont \gt{〔参考文献〕}}
+	\end{center}
+}
+%---------------------------------------------------------------------------
+% ページフッター定義
+%---------------------------------------------------------------------------
+\newcounter{@totalpage}
+\newcommand{\totalpage}{%
+	\setcounter{@totalpage}{\thepage}%
+	\addtocounter{@totalpage}{\@starttotalpage}%
+	\the@totalpage
+}
+
+\renewcommand{\ps@plainfoot}{%
+	\renewcommand{\@oddfoot}{%
+		\ifodd \thepage
+		\small
+		\begin{picture}(0,0)(0,0)
+			Vol.~\@articlevolume~~No.~\@articlenumber~~\@articleyear
+		\end{picture}
+		\hfil
+		(\hspace{0.5mm}\textsl{\totalpage}\hspace{0.5mm}) \hfil \thepage
+		\else
+		\small \thepage \hfil(\hspace{0.5mm}\textsl{\totalpage}\hspace{0.5mm}) \hfil 固体物理
+		\fi
+	}%
+}
+\renewcommand{\ps@plain}{\ps@plainfoot}
+\pagestyle{plain}
+%---------------------------------------------------------------------------
