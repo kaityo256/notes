@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>熱浴法とMetropolis法の棄却率</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script>
+    MathJax = {
+      tex: {
+        macros: {
+          diff: ["{\\mathrm d}", 0],
+          ave: ["\\left\\langle #1 \\right\\rangle", 1],
+          v: ["{\\bf #1}", 1],
+          dH: ["\\displaystyle \\frac{\\partial H}{\\partial #1}", 1],
+          e: ["{\\mathrm e}", 0],
+          hr: ["\\hat{\\rho}", 0]
+        },
+        tags: 'ams'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <nav><a href="../index.html">&larr; 目次に戻る</a></nav>
+  <article>
+    <h1 data-number="1" id="はじめに"><span
+    class="header-section-number">1</span> はじめに</h1>
+    <p>マルコフ連鎖モンテカルロ法においては、最終的に平衡状態がボルツマン重みに比例していれば
+    どのような遷移確率を用いても良いが、簡単のために詳細釣り合い条件を要請することが多い。
+    しかし、詳細釣り合い条件を課すだけでは、まだ遷移確率を決めることができない。
+    例えば二準位系では、遷移確率は4通り決める必要があるが、
+    確率の保存で2つ、詳細釣り合い条件で1つ、合計3つの条件があり、自由度が1つ残る。
+    三準位系では、遷移確率が9通りあり、拘束条件は確率の保存で3つ、詳細釣り合いで3つであるため、
+    自由度が3つ残る。一般に状態が増えれば増えるほど残る自由度が増えていき、
+    <span class="math inline">\(N\)</span>個の状態がある系では<span
+    class="math inline">\((N^2-N)/2\)</span>個の自由度が残る。
+    この時、もっとも「良い」遷移確率の選び方はあるのだろうか？
+    よく使われるMetropolis法と熱浴法は、何かを最適化した結果得られる選択なのか？
+    そのあたりを調べるため、とりあえず二準位系と三準位系においてMetropolis法と熱浴法の棄却率を比較してみた。</p>
+    <div class="center">
+    <figure>
+    <img src="images/level2.png" id="fig_level2" style="width:50%"
+    alt="二準位系におけるMetropolis法のマルコフ遷移図。" />
+    <figcaption
+    aria-hidden="true">図1: 二準位系におけるMetropolis法のマルコフ遷移図。</figcaption>
+    </figure>
+    </div>
+    <h1 data-number="2" id="二準位系の場合"><span
+    class="header-section-number">2</span> 二準位系の場合</h1>
+    <p>状態<span class="math inline">\(A\)</span>、<span
+    class="math inline">\(B\)</span>の二準位系を考える。それぞれのエネルギーを<span
+    class="math inline">\(E_A\)</span>、<span
+    class="math inline">\(E_B\)</span>とし、 逆温度を<span
+    class="math inline">\(\beta\)</span>とする。ここで、<span
+    class="math inline">\(E_A &lt;
+    E_B\)</span>としても一般性を失わない。 <span
+    class="math display">\[\begin{aligned}
+    a &amp;\equiv  \exp(-\beta E_A)\\
+    b &amp;\equiv  \exp(-\beta E_B)
+    \end{aligned}\]</span>
+    と略記すると、それぞれの平衡状態での存在確率<span
+    class="math inline">\(\pi(A)\)</span>、<span
+    class="math inline">\(\pi(B)\)</span>は、 <span
+    class="math display">\[\begin{aligned}
+    \pi(A) &amp;=  \frac{a}{a+b}\\
+    \pi(B) &amp;=  \frac{b}{a+b}
+    \end{aligned}\]</span> と表される。なお、<span
+    class="math inline">\(E_A &lt; E_B\)</span>より、<span
+    class="math inline">\(a&gt;b\)</span>である。
+    さて、平衡状態における棄却確率を考える。
+    平衡状態における棄却確率<span
+    class="math inline">\(R\)</span>とは、一ステップ後に現在の状態にとどまる確率、すなわち
+    <span class="math display">\[R \equiv \sum_X^{A,B} \pi(X) P(X
+    \rightarrow X)\]</span> として定義する。ただし<span
+    class="math inline">\(P(X \rightarrow Y)\)</span>は状態<span
+    class="math inline">\(X\)</span>から状態<span
+    class="math inline">\(Y\)</span>への遷移確率とする。
+    Metroplis法の場合、棄却確率<span
+    class="math inline">\(R_\mathrm{M}\)</span>は <span
+    class="math display">\[\begin{aligned}
+    R_\mathrm{M} &amp;=  \left(1 -\frac{b}{a}\right) \frac{a}{a+b} \\
+    &amp;=  \frac{a-b}{a+b}
+    \end{aligned}\]</span> である(図<a href="#fig_level2"
+    data-reference-type="ref" data-reference="fig_level2">1</a>参照)。
+    熱浴法の場合、新しい状態は現在の状態に関係なく、平衡状態での存在確率<span
+    class="math inline">\(\pi\)</span>に比例して決まる。
+    したがって、棄却確率<span
+    class="math inline">\(R_\mathrm{hb}\)</span>は <span
+    class="math display">\[\begin{aligned}
+    R_\mathrm{hb} &amp;=  \pi(A)^2 +\pi(B)^2\\
+    &amp;=  \frac{a^2+b^2}{(a+b)^2}
+    \end{aligned}\]</span> となる。ここで、状態<span
+    class="math inline">\(A\)</span>のエネルギー<span
+    class="math inline">\(E_A\)</span>を原点に取り直す(<span
+    class="math inline">\(E_A=0\)</span>とする)。 すると<span
+    class="math inline">\(a=1\)</span>となるので、 <span
+    class="math display">\[\begin{aligned}
+    R_\mathrm{M} &amp;=  \frac{1-b}{1+b} \\
+    R_\mathrm{hb} &amp;=  \frac{1+b^2}{(1+b)^2}
+    \end{aligned}\]</span> したがって、 <span
+    class="math display">\[R_\mathrm{hb} - R_\mathrm{M} = \frac{2
+    b^2}{(1+b)^2} &gt;0\]</span>
+    つまり、Metropolis法よりも、熱浴法のほうが常に棄却率が高いことがわかる。
+    一般に、二準位系においては、詳細釣り合い条件を満たす範囲においては
+    Metroplis方がもっとも平均棄却率が低いことを証明できる。</p>
+    <div class="center">
+    <figure>
+    <img src="images/level3.png" id="fig_level3" style="width:50%"
+    alt="三準位系におけるMetropolis法のマルコフ遷移図。" />
+    <figcaption
+    aria-hidden="true">図2: 三準位系におけるMetropolis法のマルコフ遷移図。</figcaption>
+    </figure>
+    </div>
+    <h1 data-number="3" id="三準位系の場合"><span
+    class="header-section-number">3</span> 三準位系の場合</h1>
+    <p>三準位系でも同様に棄却率を計算してみる。 状態は<span
+    class="math inline">\(A, B, C\)</span>とし、<span
+    class="math inline">\(E_A &lt; E_B &lt; E_C\)</span>とする。
+    二準位系と同様に重み<span class="math inline">\(a, b,
+    c\)</span>を導入すると。 Metroplis法の場合の棄却確率<span
+    class="math inline">\(R_\mathrm{M}\)</span>は <span
+    class="math display">\[\begin{aligned}
+    R_\mathrm{M} &amp;=  \left(1 -\frac{b+c}{2a} \right) \pi(A)  +
+    \left(\frac{1}{2} - \frac{c}{2b} \right) \pi(B)\\
+    &amp;=  \frac{a-c}{a+b+c}
+    \end{aligned}\]</span> となる((図<a href="#fig_level3"
+    data-reference-type="ref" data-reference="fig_level3">2</a>参照))。
+    熱浴法では <span class="math display">\[\begin{aligned}
+    R_\mathrm{hb} &amp;=  \pi(A)^2 +\pi(B)^2 + \pi(C)^2\\
+    &amp;=  \frac{a^2+b^2+c^2}{(a+b+c)^2}
+    \end{aligned}\]</span> 二準位系と同様に状態<span
+    class="math inline">\(A\)</span>のエネルギーを原点に取り直し(<span
+    class="math inline">\(a=1\)</span>)、棄却率の差を計算すると <span
+    class="math display">\[R_\mathrm{hb} - R_\mathrm{M} = \frac{b^2 +
+    (c-1) b + 2 c^2}{(1+b+c)^2}\]</span> この値は、<span
+    class="math inline">\(b\)</span>と<span
+    class="math inline">\(c\)</span>の値により正にも負にもなる。したがって、熱浴法とMetropolis法のどちらが
+    棄却率が低いかは条件に依存する(図<a href="#fig_graph"
+    data-reference-type="ref" data-reference="fig_graph">3</a>)。</p>
+    <div class="center">
+    <figure>
+    <img src="images/graph2.png" id="fig_graph" style="width:40%"
+    alt="三準位系における棄却率。b&gt;cの領域で、下の方は熱浴法のほうがMetropolis法よりも棄却率が低くなる。" />
+    <figcaption aria-hidden="true">図3: 三準位系における棄却率。<span
+    class="math inline">\(b&gt;c\)</span>の領域で、下の方は熱浴法のほうがMetropolis法よりも棄却率が低くなる。</figcaption>
+    </figure>
+    </div>
+    <h1 data-number="4" id="考察"><span
+    class="header-section-number">4</span> 考察</h1>
+    <p>遷移確率は詳細釣り合い条件だけでは決まらないため、そこに自由度が存在する。
+    二準位系においては、「平衡状態における棄却率を最小化する」という要請により
+    Metropolis法が選ばれるが、三準位以上の系においては、熱浴法とMetropolis法の
+    どちらが棄却率が低いかは条件に依存する。
+    また、三準位以上の系においては熱浴法、Metropolis法のどちらよりも
+    棄却率の低い遷移確率の決め方があるのかもしれないし、
+    実は熱浴法かMetropolis法のどちらかになってしまうのかもしれないが、
+    面倒なのでまだ計算していない。</p>
+    <h1 data-number="5" id="appendix"><span
+    class="header-section-number">5</span> Appendix</h1>
+    <p>一般に<span
+    class="math inline">\(N\)</span>状態のMetropolis法の棄却率は <span
+    class="math display">\[R = \frac{1}{N-1}\sum_{k=1}^N (N+1-2k)
+    \pi_k\]</span> で、熱浴法の平均棄却率は <span
+    class="math display">\[R = \sum_{k=1}^N \pi_k^2\]</span>
+    で与えられる。</p>
+  </article>
+</body>
+</html>

@@ -1,0 +1,158 @@
+/* 本文 */
+article {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1em 1.5em;
+  line-height: 1.8;
+  font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  color: #333;
+}
+
+h1, h2, h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: 1.6em;
+  border-bottom: 2px solid #333;
+  padding-bottom: 0.3em;
+}
+
+h2 {
+  font-size: 1.3em;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.2em;
+}
+
+h3 {
+  font-size: 1.1em;
+}
+
+p {
+  margin: 0.8em 0;
+}
+
+/* 図（共通） */
+figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+}
+
+figcaption {
+  text-align: center;
+  font-size: 0.9em;
+  margin-top: 0.5em;
+  color: #555;
+  line-height: 1.5;
+  padding: 0 1em;
+}
+
+/* 横並び図 */
+.multi-image .image-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.multi-image .image-row img {
+  flex: 1 1 0;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+}
+
+/* style属性で幅指定された画像はその指定を優先 */
+.multi-image .image-row img[style*="width"] {
+  flex: 0 1 auto;
+}
+
+/* 狭い画面では横並び図を縦積みにして可読性を優先 */
+@media (max-width: 700px) {
+  .multi-image .image-row {
+    flex-wrap: wrap;
+  }
+
+  .multi-image .image-row img,
+  .multi-image .image-row img[style*="width"] {
+    flex: 1 1 100%;
+    width: 100% !important;
+  }
+}
+
+/* 数式 */
+.math.display {
+  overflow-x: auto;
+  padding: 0.5em 0;
+}
+
+/* 参考文献 */
+.references {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #ccc;
+}
+
+.references ol {
+  padding-left: 2em;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+.thebibliography {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #ccc;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+/* 脚注 */
+.footnotes {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #ccc;
+  font-size: 0.85em;
+}
+
+/* ナビゲーション */
+nav {
+  padding: 0.5em 1em;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.9em;
+}
+
+nav a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* 目次ページ用 */
+.index-list {
+  list-style: none;
+  padding: 0;
+}
+
+.index-list li {
+  margin: 0.8em 0;
+  font-size: 1.1em;
+}
+
+.index-list a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.index-list a:hover {
+  text-decoration: underline;
+}

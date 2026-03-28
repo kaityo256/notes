@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一様乱数を使う</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script>
+    MathJax = {
+      tex: {
+        macros: {
+          diff: ["{\\mathrm d}", 0],
+          ave: ["\\left\\langle #1 \\right\\rangle", 1],
+          v: ["{\\bf #1}", 1],
+          dH: ["\\displaystyle \\frac{\\partial H}{\\partial #1}", 1],
+          e: ["{\\mathrm e}", 0],
+          hr: ["\\hat{\\rho}", 0]
+        },
+        tags: 'ams'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <nav><a href="../index.html">&larr; 目次に戻る</a></nav>
+  <article>
+    <h1 data-number="1" id="確率変数と確率密度"><span
+    class="header-section-number">1</span> 確率変数と確率密度</h1>
+    <p>ある数列<span
+    class="math inline">\(x_n\)</span>を考えよう。いま、<span
+    class="math inline">\(x_1, x_2, \cdots,
+    x_n\)</span>まで値が定まっているとき、 次の値<span
+    class="math inline">\(x_{n+1}\)</span>が確率的に決まるような変数を確率変数と呼ぶ。
+    また、それまでの値<span class="math inline">\(x_1, x_2, \cdots,
+    x_n\)</span>と<span
+    class="math inline">\(x_{n+1}\)</span>が全く無関係である場合、
+    この数を乱数と呼ぶ。サイコロを１０回振って出た目の履歴と、１１回目に出る目は
+    無関係であるので乱数であると言える。</p>
+    <p>確率変数<span
+    class="math inline">\(X\)</span>が連続変数であるとしよう。また、簡単のため、定義域が有界で、<span
+    class="math inline">\(0 \le X \le 1\)</span>でる場合のみを考える。
+    確率変数<span class="math inline">\(X\)</span>が値<span
+    class="math inline">\(x\)</span>から<span
+    class="math inline">\(x+{\mathrm d}x\)</span>までの値をとる確率が
+    <span class="math display" id="eq_density">\[P(x \le X &lt; x +{\mathrm d}x) = f(x)
+    {\mathrm d}x \]</span>
+    とあらわされるとき、関数<span
+    class="math inline">\(f(x)\)</span>を<span
+    class="math inline">\(X\)</span>の<span><strong>確率密度関数
+    (probability density function, PDF)</strong></span>と呼ぶ<a
+    href="#fn1" class="footnote-ref" id="fnref1"
+    role="doc-noteref"><sup>1</sup></a>。 ただし、関数<span
+    class="math inline">\(f(x)\)</span>は規格化条件 <span
+    class="math display">\[\int_0^1 f(x) {\mathrm d}x  = 1\]</span>
+    を満たす。 この式を <span class="math display" id="eq_density2">\[
+    P(X = x) = f(x)\]</span> などと表現、理解しないようにしよう。式(<a
+    href="#eq_density2" data-reference-type="ref"
+    data-reference="eq_density2">[eq_density2]</a>)は 「確率変数<span
+    class="math inline">\(X\)</span>が、値<span
+    class="math inline">\(x\)</span>を持つ確率は<span
+    class="math inline">\(f(x)\)</span>であらわされる」という意味で、
+    式(<a href="#eq_density" data-reference-type="ref"
+    data-reference="eq_density">[eq_density]</a>)より理解しやすいかもしれない。
+    サイコロなど、離散変数の場合はこれでも良いが、 連続変数<span
+    class="math inline">\(X\)</span>がピンポイントで何かの値<span
+    class="math inline">\(x\)</span>を持つという事象の確率はゼロである。
+    厳密な議論については測度論を参照することにして、今は、式(<a
+    href="#eq_density" data-reference-type="ref"
+    data-reference="eq_density">[eq_density]</a>)が定義だと覚えておけば問題はない。</p>
+    <p>さて、式(<a href="#eq_density" data-reference-type="ref"
+    data-reference="eq_density">[eq_density]</a>)は微分の形をしており、このままでは扱いにくい。
+    そこで、<span class="math inline">\(X\)</span>が<span
+    class="math inline">\(x\)</span>以下の値をとる確率<span
+    class="math inline">\(P(0\le X &lt; x)\)</span>を考える。
+    これは式(<a href="#eq_density" data-reference-type="ref"
+    data-reference="eq_density">[eq_density]</a>)を積分することで得られ、
+    <span class="math display" id="eq_cdf">\[\begin{aligned}
+    P(0\le X &lt; x) &amp;=  \int_0^x {\mathrm d}x f(x)\\
+    &amp;=  F(x) 
+    \end{aligned}\]</span> とあらわされる。この関数<span
+    class="math inline">\(F(x)\)</span>を、<span><strong>累積密度関数
+    (cumulative distribution function, CDF)</strong></span>と呼ぶ。</p>
+    <p>確率密度関数が定数である場合、つまり確率変数<span
+    class="math inline">\(X\)</span>が、ある範囲<span
+    class="math inline">\(x \le  X &lt; x + {\mathrm
+    d}x\)</span>を取る確率が <span
+    class="math inline">\(x\)</span>に依存しない場合、この確率変数を一様乱数であるという。定義域が<span
+    class="math inline">\(0\le X&lt;1\)</span>であるような一様乱数の
+    確率密度関数は<span class="math inline">\(f(x) =
+    1\)</span>である。この一様乱数に従う確率変数を<span
+    class="math inline">\(R\)</span>としよう。 一様乱数<span
+    class="math inline">\(R\)</span>から、なんらかの変換<span
+    class="math inline">\(g(R) =
+    X\)</span>により、任意の確率密度関数<span
+    class="math inline">\(f(x)\)</span>に従う確率変数<span
+    class="math inline">\(X\)</span>を作るのが本稿の目的である。</p>
+    <p>さて、一様乱数の定義から、確率変数<span
+    class="math inline">\(R\)</span>が、値<span class="math inline">\(0
+    \le  R &lt; r\)</span>を取る確率は <span class="math display">\[P(0
+    \le  R &lt; r ) \equiv \int_0^r {\mathrm d}r = r\]</span>
+    である。これと式(<a href="#eq_cdf" data-reference-type="ref"
+    data-reference="eq_cdf">[eq_cdf]</a>)を見比べれば、 <span
+    class="math inline">\(F(X) =
+    R\)</span>という変数変換をすると、一様乱数<span
+    class="math inline">\(R\)</span>から確率密度関数<span
+    class="math inline">\(f(x)\)</span>に従う確率変数<span
+    class="math inline">\(X\)</span>ができることがわかる。 実際、<span
+    class="math inline">\(F(X) =
+    R\)</span>という変換で作られた確率変数<span
+    class="math inline">\(X\)</span>が、<span
+    class="math inline">\(0  \le X &lt;
+    x\)</span>という範囲の値を取る確率は <span
+    class="math display">\[P(0 \le  X &lt; x ) = P(0 \le  R &lt; F(x)) =
+    F(x)\]</span> であることから<a href="#fn2" class="footnote-ref"
+    id="fnref2" role="doc-noteref"><sup>2</sup></a>、 <span
+    class="math display">\[P(x \le  X &lt; x + {\mathrm d}x ) =
+    f(x){\mathrm d}x\]</span> であり、確かに確率密度関数<span
+    class="math inline">\(f(x)\)</span>に従っていることがわかる。
+    つまり、一様乱数から任意の確率密度関数に従う確率変数を作るには、「確率密度関数の原始関数の逆関数」を用いて変数変換をすれば良いことがわかる。直感的な説明は図<a
+    href="#fig_xrmap" data-reference-type="ref"
+    data-reference="fig_xrmap">1</a>を参照のこと。</p>
+    <div class="center">
+    <figure>
+    <img src="images/xrmap.png" id="fig_xrmap" style="width:50%"
+    alt=" 一様乱数rから確率密度f(x)であるような確率変数Xを生成する方法は 図のように写像として理解できる。 一様に並んだ点(図の白丸)を、ある関数を使ってx軸上に移動することを考える。 このとき、うつされた点(図の黒丸)の密度がf(x)となるように 変換しなければならない。したがって0 \le x \le x&#39;までの点の数は、 f(x&#39;)の原始関数F(x&#39;)である。 したがって、その逆関数F^{-1}(r)を使ってrを変換すればよいことがわかる。 図ではf(x) = xであるような場合を例示してある。このときF^{-1}(r) = r^{1/2}となる。 " />
+    <figcaption aria-hidden="true">図1:  一様乱数<span
+    class="math inline">\(r\)</span>から確率密度<span
+    class="math inline">\(f(x)\)</span>であるような確率変数<span
+    class="math inline">\(X\)</span>を生成する方法は
+    図のように写像として理解できる。
+    一様に並んだ点(図の白丸)を、ある関数を使って<span
+    class="math inline">\(x\)</span>軸上に移動することを考える。
+    このとき、うつされた点(図の黒丸)の<span><strong>密度</strong></span>が<span
+    class="math inline">\(f(x)\)</span>となるように
+    変換しなければならない。したがって<span class="math inline">\(0 \le
+    x \le x&#39;\)</span>までの点の数は、 <span
+    class="math inline">\(f(x&#39;)\)</span>の原始関数<span
+    class="math inline">\(F(x&#39;)\)</span>である。
+    したがって、その逆関数<span
+    class="math inline">\(F^{-1}(r)\)</span>を使って<span
+    class="math inline">\(r\)</span>を変換すればよいことがわかる。
+    図では<span class="math inline">\(f(x) =
+    x\)</span>であるような場合を例示してある。このとき<span
+    class="math inline">\(F^{-1}(r) = r^{1/2}\)</span>となる。
+    </figcaption>
+    </figure>
+    </div>
+    <h1 data-number="2" id="有界の定義域の場合"><span
+    class="header-section-number">2</span> 有界の定義域の場合</h1>
+    <p>まず、確率変数<span
+    class="math inline">\(X\)</span>の定義域が有限である場合について
+    いくつか例を挙げよう。簡単のため、<span
+    class="math inline">\(X\)</span>のとりうる値は<span
+    class="math inline">\([0,1]\)</span>であるとする。</p>
+    <h2 data-number="2.1" id="一様乱数"><span
+    class="header-section-number">2.1</span> 一様乱数</h2>
+    <p><span
+    class="math inline">\(X\)</span>が一様変数であるとしよう。このとき<span
+    class="math inline">\(f(x)=1\)</span>であるから、その積分は <span
+    class="math inline">\(F(x)=x\)</span>となる。その逆関数も<span
+    class="math inline">\(F^{-1}(x)=x\)</span>であるから、結局 <span
+    class="math inline">\(g(r)=r\)</span>、すなわち、生成された一様乱数<span
+    class="math inline">\(r\)</span>をそのまま使えばよい。</p>
+    <h2 data-number="2.2" id="sec_linear"><span
+    class="header-section-number">2.2</span> 密度が線形の場合</h2>
+    <p><span
+    class="math inline">\(f(x)=x\)</span>であるような確率変数<span
+    class="math inline">\(X\)</span>を再現したいとする。 これは、<span
+    class="math inline">\(0 \le X \le
+    1\)</span>の範囲で、出る値が、値自身に比例するような
+    変数である。たとえば、十分小さな<span class="math inline">\(\Delta
+    x\)</span>について <span class="math inline">\(0.1 &lt; x &lt; 0.1 +
+    \Delta x\)</span>の範囲の値をとる確率は <span
+    class="math inline">\(0.01 &lt; x &lt; 0.01 + \Delta
+    x\)</span>の10倍となる。</p>
+    <p>このとき、<span
+    class="math inline">\(F(x)=x^2\)</span>であるので、逆関数は<span
+    class="math inline">\(g(r) = F^{-1}(r) = r^{1/2}\)</span>となる。
+    すなわち、生成された一様乱数の平方根を使えば、このような確率変数を
+    再現することができる。</p>
+    <h2 data-number="2.3" id="単位円内に一様分布する点"><span
+    class="header-section-number">2.3</span>
+    単位円内に一様分布する点</h2>
+    <p>単位円の中に一様に点をばらまくことを考える。これは 条件<span
+    class="math inline">\(x^2+y^2 \le 1\)</span>を満たすような座標<span
+    class="math inline">\((x,y)\)</span>をランダムに生成することに対応する。
+    極座標<span class="math inline">\(x = r \cos \theta, y = r \sin
+    \theta\)</span>を使って表現すると、 角度は一様であるから、<span
+    class="math inline">\(\theta\)</span>に関しては 単に<span
+    class="math inline">\(0 \le \theta &lt;
+    2\pi\)</span>であるような一様乱数を使えばよい。 動径方向<span
+    class="math inline">\(r\)</span>に関しては、一様乱数を使ってしまうと円の中心付近になるほど
+    密度が高くなるような分布になってしまうので、ちゃんと考えなくてはいけない。</p>
+    <p>この場合、まず<span
+    class="math inline">\(f(x)\)</span>がどうなっているか考える。<span
+    class="math inline">\(f(x)\)</span>は、 半径<span
+    class="math inline">\(x &lt; r &lt; x + \Delta
+    x\)</span>にある点の数に対応する。したがって、 <span
+    class="math inline">\(F(x)\)</span>は、半径<span
+    class="math inline">\(x\)</span>の円の中の点の数、要するに面積であるから、<span
+    class="math inline">\(x^2\)</span>に比例する。 これは<a
+    href="#sec_linear" data-reference-type="ref"
+    data-reference="sec_linear">2.2</a>節の場合と同じであるから、<span
+    class="math inline">\(r\)</span>として一様乱数の平方根を使えばよい。
+    以上をまとめると、<span
+    class="math inline">\([0,1]\)</span>上の一様乱数 <span
+    class="math inline">\(r\)</span>と、<span
+    class="math inline">\([0,2\pi]\)</span>上の一様乱数<span
+    class="math inline">\(\theta\)</span>を使って、 <span
+    class="math display">\[\begin{aligned}
+    x &amp;=  r^{1/2} \cos \theta \\
+    y &amp;=  r^{1/2} \sin \theta
+    \end{aligned}\]</span> とすればよい。</p>
+    <h2 data-number="2.4" id="単位球面に一様分布する点"><span
+    class="header-section-number">2.4</span>
+    単位球面に一様分布する点</h2>
+    <p>単位球の表面に一様に点をばらまくには少し工夫がいる。
+    単位球の表面は、極座標 <span
+    class="math inline">\((\theta,\phi)\)</span>で表すことができるが、
+    <span
+    class="math inline">\((\theta,\phi)\)</span>に対して、ヤコビアンが
+    <span class="math inline">\(\sin \theta {\mathrm d}\theta {\mathrm
+    d}\phi\)</span>で あったことを思い出そう。このままでは、<span
+    class="math inline">\(\sin \theta\)</span>に比例するように <span
+    class="math inline">\(\theta\)</span>を生成しなければならない。
+    ここで変数変換 <span class="math display">\[z = \cos \theta\]</span>
+    を施せば、 <span class="math display">\[{\mathrm d}z = -\sin \theta
+    {\mathrm d}\theta\]</span> となるので、ヤコビアンは <span
+    class="math inline">\(-{\mathrm d}z {\mathrm d}\phi\)</span>となる。
+    したがって2変数<span
+    class="math inline">\((z,\phi)\)</span>で表現すれば、<span
+    class="math inline">\(z\)</span>、<span
+    class="math inline">\(\phi\)</span>ともに
+    一様乱数でよい。具体的には、<span
+    class="math inline">\([-1,1]\)</span>上の一様乱数<span
+    class="math inline">\(z\)</span>及び、<span
+    class="math inline">\([0,2\pi]\)</span>上の一様乱数<span
+    class="math inline">\(\phi\)</span>を 用いて、 <span
+    class="math display">\[\begin{aligned}
+    x &amp;=  \sqrt{1-z^2} \cos \phi \\
+    y &amp;=  \sqrt{1-z^2} \sin \phi\\
+    z &amp;=  z
+    \end{aligned}\]</span> とすれば、球面上に一様に分布する点<span
+    class="math inline">\((x,y,z)\)</span>が得られる<a href="#fn3"
+    class="footnote-ref" id="fnref3"
+    role="doc-noteref"><sup>3</sup></a>。</p>
+    <h2 data-number="2.5" id="単位球内に一様分布する点"><span
+    class="header-section-number">2.5</span>
+    単位球内に一様分布する点</h2>
+    <p>単位球内に一様に点をばらまくには、単位球面の場合にに加えて動径方向の分布を
+    考えてやればよい。<a href="#sec_linear" data-reference-type="ref"
+    data-reference="sec_linear">2.2</a>節の場合と同様に考えれば、一様乱数<span
+    class="math inline">\(r~(0\le r \le 1)\)</span>を使って、 <span
+    class="math display">\[\begin{aligned}
+    x &amp;=  r^{1/3} \sqrt{1-z^2} \cos \phi \\
+    y &amp;=  r^{1/3} \sqrt{1-z^2} \sin \phi\\
+    z &amp;=  r^{1/3} z
+    \end{aligned}\]</span> とすれば、球内に一様に分布する点<span
+    class="math inline">\((x,y,z)\)</span>が得られる。</p>
+    <h1 data-number="3" id="定義域が有界でない場合"><span
+    class="header-section-number">3</span> 定義域が有界でない場合</h1>
+    <h2 data-number="3.1" id="原子崩壊指数分布"><span
+    class="header-section-number">3.1</span> 原子崩壊(指数分布)</h2>
+    <p>定義域が有界でない場合も同様に計算することができる。
+    たとえば、一個の放射性元素を考えよう。 単位時間あたり<span
+    class="math inline">\(\lambda\)</span>の確率で崩壊するとき、この元素が
+    崩壊するまでの時間<span
+    class="math inline">\(T\)</span>は確率変数となるが、
+    それはどのように表現できるだろうか。 単位時間あたりの崩壊確率<span
+    class="math inline">\(\lambda\)</span>は崩壊定数と呼ばれ、このような確率過程は
+    パラメータ<span
+    class="math inline">\(\lambda\)</span>の指数分布に従うことがわかっている。</p>
+    <p>この時、時間<span
+    class="math inline">\(t\)</span>までに崩壊する確率は <span
+    class="math display">\[P(0 \le T &lt; t) = 1 - \mathrm{e}^{-\lambda
+    t} \equiv F(t)\]</span> で表される。従って、一様乱数<span
+    class="math inline">\(R\)</span>から<span
+    class="math inline">\(T\)</span>を作るには、 <span
+    class="math display">\[\begin{aligned}
+    1 - \mathrm{e}^{-\lambda T} = R
+    \end{aligned}\]</span> を<span
+    class="math inline">\(T\)</span>について解いて、 <span
+    class="math display">\[\begin{aligned}
+    T = - \frac{\ln (1-R)}{\lambda}
+    \end{aligned}\]</span> とすれば良い。</p>
+    <h2 data-number="3.2" id="正規乱数"><span
+    class="header-section-number">3.2</span> 正規乱数</h2>
+    <p>定義域が有界でない例で重要なのは、正規乱数と呼ばれる乱数である。
+    この乱数は、発生頻度が標準正規分布(すなわち、平均が<span
+    class="math inline">\(0\)</span>、分散が<span
+    class="math inline">\(1\)</span>のガウス分布)
+    であるような乱数である。
+    一様乱数から正規乱数を発生させる方法はいくつかあるが、
+    ここでは<span><strong>ボックス・ミューラー(Box-Muller)法</strong></span>を紹介する。
+    範囲が<span
+    class="math inline">\((0,1)\)</span>であるような二つの独立な一様乱数<span
+    class="math inline">\(r_1, r_2\)</span>を用意する。
+    この乱数を用いて、独立な正規化された乱数<span
+    class="math inline">\(x_1, x_2\)</span>は <span
+    class="math display" id="eq_bm">\[\begin{array}{l}
+    x_1 = \sqrt{-2\ln r_1} \cos 2\pi r_2\\
+    x_2 = \sqrt{-2\ln r_1} \sin 2\pi r_2
+    \end{array} \]</span>
+    であらわすことができる。詳しい証明や理由は省くが、おおまかに説明すると、
+    <span class="math inline">\(x_1\)</span>、<span
+    class="math inline">\(x_2\)</span>が独立で標準正規分布に従う時、
+    <span
+    class="math inline">\(\sqrt{x_1^2+x_2^2}\)</span>はレイリー分布に従うことがわかる。
+    そこで、一様乱数からレイリー分布を発生させ、<span
+    class="math inline">\(x_1\)</span>、<span
+    class="math inline">\(x_2\)</span>について解けば 式(<a href="#eq_bm"
+    data-reference-type="ref"
+    data-reference="eq_bm">[eq_bm]</a>)を得る。</p>
+    <section id="footnotes" class="footnotes footnotes-end-of-document"
+    role="doc-endnotes">
+    <hr />
+    <ol>
+    <li
+    id="fn1"><p>確率空間の定義についてはより厳密な定義が望ましいが、ここでは深入りしない。<a
+    href="#fnref1" class="footnote-back"
+    role="doc-backlink">↩︎</a></p></li>
+    <li id="fn2"><p>変数変換<span class="math inline">\(F(X) =
+    R\)</span>のもとでは、<span
+    class="math inline">\(X=x\)</span>であるとき、<span
+    class="math inline">\(R=F(x)\)</span>である。<a href="#fnref2"
+    class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+    <li id="fn3"><p>ここでは変数変換という形を取ったが、
+    やっていることは <span class="math inline">\(f(\theta) = \sin
+    \theta\)</span>であるような確率変数<span
+    class="math inline">\(\theta\)</span>を <span
+    class="math inline">\(F^{-1}(z)\)</span>を使って一様乱数<span
+    class="math inline">\(z\)</span>から表現することと等価である。 <span
+    class="math inline">\(F(\theta) = \cos
+    \theta\)</span>であるから、一様乱数<span
+    class="math inline">\(z\)</span>を用いて <span
+    class="math inline">\(\theta = \cos^{-1}
+    z\)</span>とすればよい。これより<span class="math inline">\(z = \cos
+    \theta\)</span>である。<a href="#fnref3" class="footnote-back"
+    role="doc-backlink">↩︎</a></p></li>
+    </ol>
+    </section>
+  </article>
+</body>
+</html>

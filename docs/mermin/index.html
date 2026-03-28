@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二次元結晶秩序に関するMermin-Wagnerの定理の解説</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script>
+    MathJax = {
+      tex: {
+        macros: {
+          diff: ["{\\mathrm d}", 0],
+          ave: ["\\left\\langle #1 \\right\\rangle", 1],
+          v: ["{\\bf #1}", 1],
+          dH: ["\\displaystyle \\frac{\\partial H}{\\partial #1}", 1],
+          e: ["{\\mathrm e}", 0],
+          hr: ["\\hat{\\rho}", 0]
+        },
+        tags: 'ams'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <nav><a href="../index.html">&larr; 目次に戻る</a></nav>
+  <article>
+    <h1 data-number="1" id="はじめに"><span
+    class="header-section-number">1</span> はじめに</h1>
+    <h2 data-number="1.1" id="目的"><span
+    class="header-section-number">1.1</span> 目的</h2>
+    <p>本稿はMerminによる二次元粒子系に位置秩序が無いという証明<a href="#ref-Mermin">[2]</a>をフォローしたものである。
+    原著論文のフォントや表式に見づらいところがあるため、見やすくなるように
+    書き直した。
+    原著論文とつき合わせて読むのが望ましいが、本レジュメと原著の表記は完全に対応しているわけでないことに留意して欲しい。
+    間違いなどがあれば連絡をしていただければ修整する。</p>
+    <h2 data-number="1.2" id="物質の三相について"><span
+    class="header-section-number">1.2</span> 物質の三相について</h2>
+    <p>物質には固体、液体、気体の三相があることが知られているが、
+    これらの定義となるとあいまいな人も多いのでは無いだろうか。
+    まず、これらは大きく固体(Solid)と流体(Fluid)に分けることができる。
+    外から力(Shear)をかけた時に、有限の抵抗をするのが固体、
+    無限小の力でいくらでも変形が可能であるのが流体であり、
+    この意味で液体(Liquid)と気体(Gas)は区別されない。
+    また、我々は固体イコール結晶(Crystal)と思いがちであるが、
+    結晶は、粒子の位置が長距離秩序を持っていることであり、固体(Solid)とは
+    別の定義を持つ。</p>
+    <p>ここで紹介する「短距離相互作用をする二次元粒子系が長距離位置秩序を持たない」
+    というMerminの証明は、「結晶」を禁止するものであって、
+    「固体」を禁止するもので無いことに注意したい。</p>
+    <h2 data-number="1.3" id="証明のポイント"><span
+    class="header-section-number">1.3</span> 証明のポイント</h2>
+    <p>この証明は、基本的にBogoliubov不等式の応用である。
+    ただ、他の系(主に格子スピン系)への応用と異なり、相互作用をする
+    相手の数が固定されていないため、証明は簡単ではない。
+    この証明は一般的なものであり、たとえばポテンシャルの調和近似などは
+    行っていない。ただし、適用できる粒子系の
+    相互作用ポテンシャルにいくつか条件がつく。この条件はかなりゆるい条件であり、
+    だいたいのポテンシャル(たとえばLennard-Jones粒子など)には
+    当てはまるが、剛体円盤では適用してよいかが非自明である。</p>
+    <h2 data-number="1.4" id="証明の流れ"><span
+    class="header-section-number">1.4</span> 証明の流れ</h2>
+    <p>粒子数<span
+    class="math inline">\(N\)</span>の二次元粒子系を考える。
+    粒子の密度のFourier変換 <span class="math inline">\(\rho_{\bf
+    k}\)</span>について、 もし位置秩序があるのであれば、 熱力学極限<span
+    class="math inline">\((N \rightarrow \infty)\)</span>においても
+    これが有限に残る、すなわち <span class="math display">\[\lim_{N
+    \rightarrow \infty} \rho_{\bf K} \ne 0\]</span>
+    となる逆格子ベクトル<span class="math inline">\({\bf
+    K}\)</span>が最低一つは存在するはずである。 したがって、全ての<span
+    class="math inline">\({\bf k}\)</span>について<span
+    class="math inline">\(\displaystyle \lim_{N \rightarrow \infty}
+    \rho_{\bf k} = 0\)</span>と なることを示すのが証明の目的となる。</p>
+    <p>証明にはSchwartzの不等式、 <span class="math display">\[\left&lt;
+    |A|^2 \right&gt;\left&lt; |B|^2 \right&gt; \ge |\left&lt; A B
+    \right&gt;|^2\]</span> を用いる。ただし、<span
+    class="math inline">\(\left&lt; \cdots
+    \right&gt;\)</span>は熱力学平均を表す。 この式の<span
+    class="math inline">\(A\)</span>及び<span
+    class="math inline">\(B\)</span>に適切な式を代入し、様々な(近似ではない)評価を行って
+    <span class="math display">\[C \ge \sum_{{\bf k}} \frac{\rho_{\bf
+    K}^2}{k^2}\]</span> まで変形する。ただし、<span
+    class="math inline">\(\bf{K}\)</span>は逆格子ベクトル、 <span
+    class="math inline">\(C\)</span>は熱力学極限を取ったときに、ある定数に収束するような関数である。
+    <span
+    class="math inline">\(N\)</span>が大きい場合、右辺の和は積分となり、分母が対数発散する。
+    ところが左辺は有限であるから、分子である<span
+    class="math inline">\(\rho_{\bf K}\)</span>が
+    対数以上の速さで0にならなければならない。
+    以上が、二次元粒子系で位置秩序が無い証明の流れである。</p>
+    <h1 data-number="2" id="調和ポテンシャルの場合"><span
+    class="header-section-number">2</span> 調和ポテンシャルの場合</h1>
+    <p>一般の場合に比べ、粒子のポテンシャルが調和ポテンシャルの場合、計算はかなり簡単になる。
+    計算の筋道を追いやすくするため、まずは調和ポテンシャルの場合を考えよう<a href="#ref-Jancovici">[1]</a>。</p>
+    <p>粒子の位置を<span class="math inline">\({\bf
+    r}_i\)</span>とする。平衡状態の位置を<span
+    class="math inline">\({\bf R}_i\)</span>、平衡からのずれを <span
+    class="math inline">\({\bf u}_i\)</span>とすると、 <span
+    class="math display">\[{\bf r}_i = {\bf R}_i + {\bf u}_i\]</span>
+    である。さて、系の密度分布<span class="math inline">\(\rho({\bf
+    r})\)</span>はデルタ関数の和 <span class="math display">\[\rho({\bf
+    r}) = \sum_{i=1}^{N} \delta({\bf r} - {\bf r}_i)\]</span>
+    として表すことができる。密度分布をFourier変換し、波数空間で表現すると、
+    <span class="math display">\[\begin{aligned}
+      \hat{\rho}_{{\bf k}} &amp;=  \int \mbox{d} {\bf r} \exp{(i {\bf k}
+    \cdot {\bf r})} \rho({\bf r})\\
+      &amp;=  \sum_i \exp{(-i {\bf k} \cdot {\bf r}_i)}
+    \end{aligned}\]</span> となる。和の中身は<span
+    class="math inline">\(O(1)\)</span>の量であるから、秩序があれば全体として<span
+    class="math inline">\(O(N)\)</span>となるだろう。
+    そこで、熱力学平均を取った上で粒子数<span
+    class="math inline">\(N\)</span>で割った量を<span
+    class="math inline">\(\rho_{{\bf K}}\)</span>とあらわす。 すなわち、
+    <span class="math display" id="eq_posorder">\[\begin{aligned}
+      \rho_{{\bf K}} &amp;=  \frac{1}{N} \left&lt; \hat{\rho}_{{\bf K}}
+    \right&gt;  \\
+      &amp;=  \frac{1}{N} \left&lt; \sum_i \exp{(-i {\bf K} \cdot {\bf
+    r}_i)} \right&gt;  \\
+      &amp;=  \frac{1}{N} \left&lt; \sum_i \exp{(-i {\bf K} \cdot {\bf
+    u}_i)} \right&gt; 
+    \end{aligned}\]</span> を得る。ここで逆格子ベクトルの定義から<span
+    class="math inline">\({\bf K}\cdot {\bf R}_i = 0\)</span>を用いた。
+    式(<a href="#eq_posorder" data-reference-type="ref"
+    data-reference="eq_posorder">[eq_posorder]</a>)がスピン系の自発磁化にあたる量、すなわち秩序変数(order
+    parameter)となる。 平衡位置からのずれ<span
+    class="math inline">\({\bf u}_i\)</span>の<span
+    class="math inline">\(x\)</span>成分、<span
+    class="math inline">\(y\)</span>成分ともにガウス分布をしているとすれば、
+    <span class="math display" id="eq_exprho">\[\rho_{{\bf K}} =  \exp{\left( -1/2
+    \left&lt; ({\bf K} \cdot {\bf u}_i )^2 \right&gt; \right)}
+    \]</span> となる。 ここで、<span
+    class="math inline">\({\bf u}_i\)</span>のFourier変換 <span
+    class="math inline">\({\bf v}_{{\bf k}}\)</span>を考えよう。 <span
+    class="math inline">\({\bf u}_i\)</span>は<span
+    class="math inline">\({\bf v}_{{\bf k}}\)</span>を用いて、 <span
+    class="math display" id="eq_uf">\[{\bf u}_i = N^{-1/2} \sum_{{\bf k}} \exp{(i
+    {\bf k} \cdot {\bf R}_i)} {\bf v}_{{\bf k}} \]</span>
+    とあらわすことができる。 ここで、波数ベクトル<span
+    class="math inline">\({\bf k}\)</span>に対応する周波数を<span
+    class="math inline">\(\omega_{{\bf k}}\)</span>とすると、
+    エネルギー等分配則から、 <span class="math display" id="eq_equip">\[\frac{1}{4}
+    \omega_{{\bf k}}^2 \left&lt; |{\bf v}_{{\bf k}}|^2 \right&gt; =
+    \frac{1}{2} \beta^{-1} \]</span>
+    が成り立つであろう。ただし、<span class="math inline">\(\beta \equiv
+    1/k_B T\)</span>であり、等方的であるとした。 式(<a href="#eq_uf"
+    data-reference-type="ref" data-reference="eq_uf">[eq_uf]</a>)、(<a
+    href="#eq_equip" data-reference-type="ref"
+    data-reference="eq_equip">[eq_equip]</a>)より、 <span
+    class="math display" id="eq_ave">\[\left&lt; ({\bf K} \cdot {\bf
+    u}_i)^2  \right&gt; = \frac{\beta^{-1} K^2}{4 \pi^2 m} \int
+    \mbox{d}^2 k \frac{1}{\omega_{{\bf k}}^2}
+      \]</span>
+    が得られる。ここで、十分小さい波数においては<span
+    class="math inline">\(\omega_{{\bf k}} \sim ck\)</span>と
+    振舞うであろう(<span
+    class="math inline">\(c\)</span>は系の音速)。したがって、 式(<a
+    href="#eq_ave" data-reference-type="ref"
+    data-reference="eq_ave">[eq_ave]</a>)の右辺の積分は発散するので、式(<a
+    href="#eq_exprho" data-reference-type="ref"
+    data-reference="eq_exprho">[eq_exprho]</a>)に 代入した結果 <span
+    class="math inline">\(\rho_{{\bf K}}\)</span>がゼロになる。
+    発散の様子を見ると、十分大きな粒子数<span
+    class="math inline">\(N\)</span>において <span
+    class="math display">\[\int \mbox{d}^2 k \frac{1}{\omega_{{\bf
+    k}}^2} \sim \log{N}\]</span> と振舞うはずである。
+    したがって、これを式(<a href="#eq_exprho" data-reference-type="ref"
+    data-reference="eq_exprho">[eq_exprho]</a>)に代入すれば、 <span
+    class="math display">\[\begin{aligned}
+      \rho_{{\bf K}} &amp;=   \exp{\left( -1/2 \left&lt; ({\bf K} \cdot
+    {\bf u}_i )^2 \right&gt; \right)}  \\
+      &amp;=  \exp{\left( \alpha K^2 \log{\sqrt{N}}  \right)} \quad
+    (\alpha^{-1} \equiv 4 \pi^2 m \beta)  \\
+      &amp;=  N^{- \alpha K^2}
+    \end{aligned}\]</span>
+    であり、粒子数に対してベキ的に秩序が押さえ込まれた。</p>
+    <h1 data-number="3" id="merminによる証明"><span
+    class="header-section-number">3</span> Merminによる証明</h1>
+    <h2 data-number="3.1" id="証明の前半"><span
+    class="header-section-number">3.1</span> 証明の前半</h2>
+    <p>それでは一般の二体ポテンシャル<span
+    class="math inline">\(\Phi({\bf
+    r})\)</span>で相互作用する二次元粒子系を考えよう。
+    系が結晶を組んでいる場合、ふたつの基本ベクトル<span
+    class="math inline">\({\bf a}_1\)</span>と<span
+    class="math inline">\({\bf a}_2\)</span>によって
+    結晶系が張られているであろう。以下では、二つの整数<span
+    class="math inline">\(N_1\)</span>と<span
+    class="math inline">\(N_2\)</span>を用いて 系が<span
+    class="math inline">\(N_1{\bf a}_1\)</span>と<span
+    class="math inline">\(N_2{\bf
+    a}_2\)</span>で張られた平行四辺形の中にあるとする。
+    したがって粒子数は<span class="math inline">\(N=N_1
+    N_2\)</span>である。</p>
+    <p>境界条件は、固定境界条件とする。すなわち、粒子は平行四辺形の形をした
+    ポテンシャル無限大の壁に閉じ込められている。
+    証明の形は、境界条件に依存するが、
+    粒子系の自由エネルギーの収束条件が、固定境界でしか
+    証明されていないことから、周期境界ではなく固定境界を用いる
+    (不等式の評価に自由エネルギーが定義できることを用いるため)。</p>
+    <p>粒子<span class="math inline">\(i\)</span>の位置を<span
+    class="math inline">\({\bf r}_i\)</span>とすると、整数<span
+    class="math inline">\(n_1,n_2\)</span>を用いて <span
+    class="math inline">\({\bf r}_i = n_1 {\bf a}_1 + n_2 {\bf
+    a}_2\)</span>と表されるであろう。 系の密度分布<span
+    class="math inline">\(\rho({\bf r})\)</span>はデルタ関数の和 <span
+    class="math display">\[\rho({\bf r}) = \sum_{i=1}^{N} \delta({\bf r}
+    - {\bf r}_i)\]</span> として表すことができる。
+    調和ポテンシャルの場合と同様に密度分布をFourier変換し、 <span
+    class="math display" id="eq_fourie">\[\rho_{{\bf k}} = \frac{1}{N} \left&lt;
+    \hat{\rho}_{{\bf k}} \right&gt;
+      \]</span> を秩序変数とする。 ただし、 <span
+    class="math display">\[\begin{aligned}
+      \hat{\rho}_{{\bf k}} &amp;=  \int \mbox{d} {\bf r} \exp{(i {\bf k}
+    \cdot {\bf r})} \rho({\bf r})\\
+      &amp;=  \sum_i \exp{(-i {\bf k} \cdot {\bf r}_i)}
+    \end{aligned}\]</span> である。さらにここで用いる<span
+    class="math inline">\({\bf k}\)</span>は、 <span
+    class="math display">\[{\bf b}_i \cdot {\bf a}_j = 2\pi
+    \delta_{ij}\]</span> を満たす基本逆格子ベクトル<span
+    class="math inline">\({\bf b}_1, {\bf b}_2\)</span>の線形和、 <span
+    class="math display">\[{\bf k} = m_1 {\bf b}_1 + m_2 {\bf
+    b}_2\]</span> と表されるものとする(<span
+    class="math inline">\(m_1,m_2\)</span>は整数)。</p>
+    <p>式<a href="#eq_fourie" data-reference-type="ref"
+    data-reference="eq_fourie">[eq_fourie]</a>の右辺の<span
+    class="math inline">\(\left&lt; \cdots
+    \right&gt;\)</span>は熱力学平均を表すが、 念のため定義を以下に記す。
+    運動エネルギーの寄与を無視すると、 系の内部エネルギー<span
+    class="math inline">\(U(\{ {\bf r}_i \})\)</span>は
+    粒子間相互作用によるものだけであり、 ポテンシャルを用いて <span
+    class="math display">\[U(\{ {\bf r}_i \}) = \frac{1}{2} \sum_{i \neq
+    j} \Phi({\bf r}_i - {\bf r}_j)\]</span> と表される。この<span
+    class="math inline">\(U\)</span>を用いて、系の分配関数は <span
+    class="math display">\[Z = \int \mbox{d} {\bf r}_1 \cdots
+    \mbox{d}{\bf r}_N
+      \exp{(-\beta U)}\]</span>
+    と書ける。ただし、積分は系の内部(この場合は平行四辺形)について行う。
+    この分配関数から熱力学平均<span class="math inline">\(\left&lt;
+    \cdots \right&gt;\)</span>を以下のように定義できる。 <span
+    class="math display">\[\left&lt; f \right&gt; = \frac{1}{Z} \int
+    \mbox{d} {\bf r}_1 \cdots \mbox{d}{\bf r}_N
+      \exp{(-\beta U)} f\]</span> すなわち、粒子の位置の関数<span
+    class="math inline">\(f(\{ {\bf r}_i
+    \})\)</span>を、その粒子の位置での
+    エネルギーをボルツマン重みとして、取りうる位置すべてで平均したものが
+    <span class="math inline">\(\left&lt; f
+    \right&gt;\)</span>である。</p>
+    <p>結晶格子が存在する場合、 逆格子ベクトルの一つ<span
+    class="math inline">\({\bf K}\)</span>を用いると、
+    熱力学極限において、 <span class="math display">\[\rho_{{\bf K}}
+    \neq 0\]</span> となるはずである。ただし、熱力学極限とは <span
+    class="math inline">\(\lim N_1, N_2 \rightarrow
+    \infty\)</span>とすることに対応する。
+    本証明の目的は二次元以下で結晶秩序が無いことを示すことであるから、
+    以下で<span class="math inline">\(\rho_{{\bf K}} =
+    0\)</span>を証明する。</p>
+    <p>証明にはSchwartzの不等式、 <span class="math display" id="eq_schwartz">\[\left&lt;
+    |A|^2 \right&gt; \ge \frac{|\left&lt; A \cdot B
+    \right&gt;|}{\left&lt; |B|^2 \right&gt;}
+      \]</span> を用いる。</p>
+    <p>ここで、 <span class="math display">\[\begin{aligned}
+      \psi_i &amp;=  e^{-i({\bf k} + {\bf K}) \cdot {\bf r}_i} \\
+      \phi_i &amp;=  \sin{({\bf k} \cdot {\bf r}_i)}
+    \end{aligned}\]</span> を用いて <span id="eq_defB"></span><span
+    class="math display" id="eq_defA">\[\begin{aligned}
+      A(\{{\bf r}_i \}) &amp;=  \sum \psi_i\\ 
+      B(\{{\bf r}_i \}) &amp;=  -\beta^{-1} e^{\beta U} \sum \nabla_i
+    (\phi_i) 
+    \end{aligned}\]</span> と定義しよう<a href="#fn1"
+    class="footnote-ref" id="fnref1"
+    role="doc-noteref"><sup>1</sup></a>。ただし、和は<span
+    class="math inline">\(i=1\)</span>から<span
+    class="math inline">\(N\)</span>までとるものとする。</p>
+    <p>式(<a href="#eq_defA" data-reference-type="ref"
+    data-reference="eq_defA">[eq_defA]</a>)及び(<a href="#eq_defB"
+    data-reference-type="ref"
+    data-reference="eq_defB">[eq_defB]</a>)を、式(<a href="#eq_schwartz"
+    data-reference-type="ref"
+    data-reference="eq_schwartz">[eq_schwartz]</a>)へ代入し、
+    系の表面で<span class="math inline">\(\phi =
+    0\)</span>となることを利用して部分積分をすると、 <span
+    class="math display" id="eq_ineq">\[\left&lt; |\sum \psi_i |^2 \right&gt; \le
+      \frac{\beta^{-1} |\left&lt;  \sum \phi \nabla_i
+    \psi_i  \right&gt;|^2 }
+      {
+        \left&lt;
+          \frac{1}{2}\sum \nabla^2 \Phi({\bf r}_i-{\bf r}_j)
+    |\phi_i-\phi_j|^2
+          + \beta^{-1} \sum | \nabla \phi_i|^2
+         \right&gt;
+      }
+      \]</span>
+    を得る。ちなみに、この不等式が成り立つ条件は <span
+    class="math inline">\(\psi,\phi\)</span>ともに微分可能な連続関数で、系の表面(Boundary)において
+    <span class="math inline">\(\phi({\bf r}) =
+    0\)</span>であることである。後者の条件は、<span
+    class="math inline">\({\bf k}\)</span>の条件と<span
+    class="math inline">\(\phi\)</span>の定義により
+    自動的に成り立っている。</p>
+    <p>この式を、<span class="math inline">\(\rho({\bf
+    k})\)</span>を使って表そう。 まず、左辺は <span
+    class="math display">\[\begin{aligned}
+      \sum \psi_i &amp;=  \sum_i \exp{(-i ({\bf k}+{\bf K}) \cdot {\bf
+    r}_i)} \\
+      &amp;=  \hat{\rho}({\bf k}+{\bf K})
+    \end{aligned}\]</span> より、 <span
+    class="math display">\[\begin{aligned}
+      \left&lt; | \sum \psi_i |^2 \right&gt; &amp;=  \left&lt;
+    \hat{\rho}^*({\bf k}+{\bf K}) \hat{\rho}({\bf k}+{\bf K})
+    \right&gt;\\
+      &amp;=  \left&lt; \hat{\rho}(-{\bf k}-{\bf K}) \hat{\rho}({\bf
+    k}+{\bf K}) \right&gt;
+    \end{aligned}\]</span></p>
+    <p>同様に、右辺は <span class="math display" id="eq_bigfrac">\[\frac{
+      1/4 \beta^{-1} \left( {\bf k} + {\bf K} \right)^2
+      \left|
+      \left&lt;  \rho({\bf K})-\rho({\bf K}+2{\bf k})  \right&gt;
+      \right|^2
+      }{
+      1/2 \sum
+      \left&lt;
+        \nabla^2 \Phi_{ij}
+        (
+        \sin{ {\bf k} \cdot {\bf r}_i} - \sin{{\bf k}\cdot {\bf r}_j}
+        )^2
+       \right&gt;
+      + \beta^{-1} k^2 \left&lt; \sum \cos^2{{\bf k}\cdot{\bf r}_i}
+    \right&gt;
+      }
+      \]</span>
+    となる。以下、この不等式を評価していくことになる。</p>
+    <p>まず、式(<a href="#eq_bigfrac" data-reference-type="ref"
+    data-reference="eq_bigfrac">[eq_bigfrac]</a>)の右辺の分母にある
+    <span class="math inline">\(\cos^2{{\bf k}\cdot{\bf
+    r}_i}\)</span>は、常に <span class="math inline">\(\cos^2{{\bf
+    k}\cdot{\bf r}_i} \le 1\)</span>であるから、
+    1で置き換えても不等号は変わらない(分母が大きくなる)。 したがって、
+    <span class="math inline">\(\left&lt; \sum_i^N \cos^2{{\bf
+    k}\cdot{\bf r}_i} \right&gt;\)</span>を<span
+    class="math inline">\(N\)</span>で置き換える。</p>
+    <p>さらに、不等式 <span class="math display">\[(\sin{ {\bf k} \cdot
+    {\bf r}_i} - \sin{{\bf k}\cdot {\bf r}_j})^2 \le k^2 ({\bf r}_i-{\bf
+    r}_j)^2\]</span> により、最終的に式(<a href="#eq_ineq"
+    data-reference-type="ref"
+    data-reference="eq_ineq">[eq_ineq]</a>)は、 <span
+    class="math display" id="eq_bigfrac2">\[\left&lt; \hat{\rho}(-{\bf k}-{\bf K})
+    \hat{\rho}({\bf k}+{\bf K}) \right&gt;
+      \le
+      \frac{
+        1/4 \beta^{-1} ({\bf k} - {\bf K})^2
+        \left( \hat{\rho}({\bf K})-\hat{\rho}({\bf K}+2{\bf k})
+    \right)^2
+      }{
+        k^2 \left(
+        N \beta^{-1} + 1/2 \sum \left&lt; |\nabla^2 \Phi({\bf r}_i-{\bf
+    r}_j)| ({\bf r}_i-{\bf r}_j)^2 \right&gt;
+        \right)
+      }
+      \]</span> というやや複雑な式になる。</p>
+    <h2 data-number="3.2" id="sec_modpotential"><span
+    class="header-section-number">3.2</span> 修正ポテンシャル</h2>
+    <p>まず、式(<a href="#eq_bigfrac2" data-reference-type="ref"
+    data-reference="eq_bigfrac2">[eq_bigfrac2]</a>)の右辺の分母の第二項
+    <span class="math display" id="eq_defD">\[\left&lt; D(\{ {\bf r}_i \}) \right&gt;
+    \equiv \left&lt; \frac{1}{2} \sum |\nabla^2 \Phi({\bf r}_i-{\bf
+    r}_j)| ({\bf r}_i-{\bf r}_j)^2 \right&gt;
+      \]</span>
+    を評価するため、もとのポテンシャルからちょっとずれた修正ポテンシャル<span
+    class="math inline">\(\Phi_{\lambda}\)</span>を <span
+    class="math display">\[\Phi_\lambda({\bf r})= \Phi({\bf r}) -
+    \lambda r^2 |\nabla^2 \Phi({\bf r})|\]</span>
+    と定義する。この修正ポテンシャルを用いて熱力学平均を <span
+    class="math display">\[\left&lt; f \right&gt;_\lambda =
+    \frac{1}{Z_\lambda} \int \mbox{d} {\bf r}_1 \cdots \mbox{d}{\bf r}_N
+    \exp{(-\beta U_\lambda)} f\]</span> と定義しよう。
+    ただし、修正された内部エネルギー<span
+    class="math inline">\(U_\lambda\)</span>は <span
+    class="math display">\[\begin{aligned}
+      U_\lambda(\{ {\bf r}_i \}) &amp;=  \frac{1}{2} \sum_{i \neq j}
+    \Phi_\lambda({\bf r}_i - {\bf r}_j)\\
+      &amp;=  \frac{1}{2} \sum_{i \neq j} \Phi({\bf r}_i - {\bf r}_j) -
+      \frac{1}{2} \lambda \sum_{i \neq j} ({\bf r}_i - {\bf r}_j)^2
+    |\nabla^2 \Phi({\bf r}_i-{\bf r}_j)| \\
+      &amp;=  U - \lambda D
+    \end{aligned}\]</span> であり、<span
+    class="math inline">\(Z_\lambda\)</span>はこの系の分配関数 <span
+    class="math display">\[Z_\lambda = \int \mbox{d} {\bf r}_1 \cdots
+    \mbox{d}{\bf r}_N \exp{(-\beta U_\lambda)}\]</span> である。</p>
+    <p>この修正ポテンシャルで相互作用する系の自由エネルギーを<span
+    class="math inline">\(F_\lambda\)</span>とすれば、 <span
+    class="math display">\[\begin{aligned}
+      F_\lambda &amp;=  - \beta^{-1} \ln Z_\lambda \\
+      &amp;=  - \beta^{-1} \int \mbox{d} {\bf r}_1 \cdots \mbox{d}{\bf
+    r}_N \exp{(-\beta (U-\lambda D))}
+    \end{aligned}\]</span> であるので、両辺<span
+    class="math inline">\(\lambda\)</span>で偏微分すると、 <span
+    class="math display" id="eq_partialF">\[\begin{aligned}
+      \frac{\partial}{\partial \lambda} F_\lambda &amp;=  - \beta^{-1}
+    \int \mbox{d} {\bf r}_1 \cdots \mbox{d}{\bf r}_N D \exp{(-\beta
+    (U-\lambda D))} \\ 
+      &amp;=  - \left&lt; D \right&gt;_\lambda \le 0 
+    \end{aligned}\]</span> である。すなわち<span
+    class="math inline">\(F_\lambda\)</span>は、<span
+    class="math inline">\(\lambda\)</span>に関して増加関数であるので、
+    任意の<span class="math inline">\(\lambda &gt; 0\)</span>に対して、
+    <span class="math inline">\(F_0 &gt; F_\lambda\)</span>が成り立つ。
+    さらに、 <span class="math display">\[\frac{\partial}{\partial
+    \lambda} \left&lt; D \right&gt;_\lambda
+      = \beta \left&lt; \left(D-\left&lt; D
+    \right&gt;_\lambda\right)^2  \right&gt;_\lambda \ge 0\]</span>
+    より、<span class="math inline">\(\left&lt; D
+    \right&gt;_\lambda\)</span>は<span
+    class="math inline">\(\lambda\)</span>に関して増加関数である。
+    以上より、式(<a href="#eq_partialF" data-reference-type="ref"
+    data-reference="eq_partialF">[eq_partialF]</a>)を両辺<span
+    class="math inline">\(\lambda\)</span>で積分することで、 <span
+    class="math display" id="eq_Fdiff">\[F_0 - F_\lambda = \int_0^{\lambda}
+    \mbox{d}\mu \left&lt; D \right&gt;_\mu \ge \lambda \left&lt; D
+    \right&gt;_0 \ge 0
+      \]</span> であることがわかる<a href="#fn2"
+    class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>
+    。<span class="math inline">\(\left&lt; D
+    \right&gt;_0\)</span>がもともと評価したかった式(<a href="#eq_defD"
+    data-reference-type="ref" data-reference="eq_defD">[eq_defD]</a>)の
+    <span class="math inline">\(\left&lt; D
+    \right&gt;\)</span>である。</p>
+    <p>さて、自由エネルギー<span
+    class="math inline">\(F_\lambda\)</span>は、粒子数が大きい極限で示量性であるべき量であるから、
+    <span class="math display">\[\lim_{N \rightarrow \infty} F_\lambda
+    \sim f_\lambda N\]</span>
+    と、粒子数に比例するべきである。ただし<span
+    class="math inline">\(f_\lambda\)</span>は有限の数である。 式(<a
+    href="#eq_Fdiff" data-reference-type="ref"
+    data-reference="eq_Fdiff">[eq_Fdiff]</a>)の両辺を<span
+    class="math inline">\(N\lambda\)</span>で割れば <span
+    class="math display">\[(f_0 - f_\lambda)/\lambda \ge
+    \frac{1}{N}\left&lt; D \right&gt;\]</span>
+    であるので、これを用いて、式(<a href="#eq_bigfrac2"
+    data-reference-type="ref"
+    data-reference="eq_bigfrac2">[eq_bigfrac2]</a>)より、<a href="#fn3"
+    class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>
+    <span class="math display" id="eq_bigfrac3">\[\frac{1}{N}
+      \left&lt; \hat{\rho}(-{\bf k}-{\bf K}) \hat{\rho}({\bf k}+{\bf K})
+    \right&gt;
+      \le
+      \frac{
+        1/4 \beta^{-1} ({\bf k} - {\bf K})^2
+        \left( \hat{\rho}({\bf K})-\hat{\rho}({\bf K}+2{\bf k})
+    \right)^2
+      }{
+        k^2  C
+      }
+      \]</span> を得る。ただし、<span
+    class="math inline">\(\beta^{-1} + (f_0 -
+    f_\lambda)/\lambda\)</span>は定数なので、 <span
+    class="math display">\[C \equiv \beta^{-1} + (f_0 -
+    f_\lambda)/\lambda\]</span> と表記した。</p>
+    <h2 data-number="3.3" id="ポテンシャルへの制限"><span
+    class="header-section-number">3.3</span> ポテンシャルへの制限</h2>
+    <p>前節でポテンシャル及び修正ポテンシャルによる 熱力学平均<span
+    class="math inline">\(\left&lt; \cdots
+    \right&gt;_\lambda\)</span>が収束するという仮定を置いたが、その仮定により
+    ポテンシャルに制限がつく<a href="#ref-Fisher">[3]</a>。その制限とは <span
+    class="math display">\[\begin{aligned}
+      \Phi_\lambda(r) &amp;\sim  1/r^{2+|\varepsilon|}, \qquad r
+    \rightarrow \infty,\\
+      \Phi_\lambda(r) &amp;&gt;&amp; 1/r^{2+|\varepsilon|}, \qquad r
+    \rightarrow 0
+    \end{aligned}\]</span> である。すなわち、遠距離においては<span
+    class="math inline">\(r^2\)</span>より早く減衰し、近距離においては
+    <span
+    class="math inline">\(r^2\)</span>より早く発散するようなポテンシャルを要求する。
+    <span class="math inline">\(\lambda =
+    0\)</span>の場合がもとのポテンシャルだが、もとのポテンシャルは
+    この条件を満たしているであろうから、 結局この条件はある<span
+    class="math inline">\(\lambda&gt;0\)</span>について <span
+    class="math display">\[\begin{aligned}
+      \nabla^2 \Phi(r) &amp;\sim  1/r^{4+|\varepsilon|}, \qquad r
+    \rightarrow \infty,\\
+      \Phi(r) - \lambda r^2  |\nabla^2 \Phi(r)| &amp;&gt;&amp;
+    1/r^{2+|\varepsilon|}, \qquad r \rightarrow 0,
+    \end{aligned}\]</span>
+    を課すことになる。この条件を満たすポテンシャル<span
+    class="math inline">\(\Phi(r)\)</span>について
+    以下の議論が進む。</p>
+    <h2 data-number="3.4" id="証明の残り"><span
+    class="header-section-number">3.4</span> 証明の残り</h2>
+    <p>式(<a href="#eq_bigfrac3" data-reference-type="ref"
+    data-reference="eq_bigfrac3">[eq_bigfrac3]</a>)の両辺に中心が<span
+    class="math inline">\(0\)</span>の 正のガウス分布、<span
+    class="math inline">\(g({\bf k}+{\bf K})\)</span>をかける。そして
+    両辺<span class="math inline">\({\bf
+    k}\)</span>について和を取る。すると <span
+    class="math display">\[\frac{1}{N}
+      \sum_{{\bf q}} g({\bf q}) \left&lt; \rho_{{\bf q}}\rho_{-{\bf q}}
+    \right&gt;
+      \ge
+      \frac{
+        1/4 \beta^{-1} \displaystyle\sum_{{\bf k}} g({\bf k}+{\bf
+    K})({\bf k} - {\bf K})^2
+        \left( \hat{\rho}({\bf K})-\hat{\rho}({\bf K}+2{\bf k})
+    \right)^2
+      }{
+        k^2  C
+      }\]</span> を得る。ただし、左辺については<span
+    class="math inline">\({\bf q} \equiv {\bf k} +{\bf
+    K}\)</span>と表記した。 この式の右辺の、和の中身は常に正であるから、
+    和を取る範囲を、最小の逆格子ベクトル<span class="math inline">\({\bf
+    K}_0\)</span>の半分未満に制限しても
+    不等号の向きは変わらない。この制限により、熱力学極限において<span
+    class="math inline">\(\hat{\rho}({\bf K}+2{\bf k})=0\)</span>
+    となる。したがって、 <span class="math display" id="eq_gauss">\[\frac{1}{N}
+      \sum_{{\bf q}} g({\bf q}) \left&lt; \rho_{{\bf q}}\rho_{-{\bf q}}
+    \right&gt;
+      \ge
+      \frac{
+        1/16 \beta^{-1} K^2 g(K_0/2)\hat{\rho}_{{\bf K}}^2
+      }{
+        C
+      } \sum_{{\bf k}&lt;{\bf K}_0/2} \frac{1}{k^2}
+      \]</span> を得る。<span class="math inline">\(1/16
+    \beta^{-1} K^2 g(K_0/2)\)</span>は(<span
+    class="math inline">\(N\)</span>に関して)
+    定数であるから、分母の<span
+    class="math inline">\(C\)</span>とあわせて、 <span
+    class="math display">\[\frac{1}{N}
+      \sum_{{\bf q}} g({\bf q}) \left&lt; \rho_{{\bf q}}\rho_{-{\bf q}}
+    \right&gt;
+      \ge
+      \hat{\rho}_{{\bf K}}^2 C&#39; \sum_{{\bf k}&lt;{\bf K}_0/2}
+    \frac{1}{k^2}\]</span> と表記する。ただし、 <span
+    class="math inline">\(C&#39; \equiv 1/16 \beta^{-1} K^2
+    g(K_0/2)\hat{\rho}_{{\bf K}}^2/C\)</span>である。</p>
+    <p>あとは、式(<a href="#eq_gauss" data-reference-type="ref"
+    data-reference="eq_gauss">[eq_gauss]</a>)の左辺が熱力学極限である定数に収束することを示せば、
+    右辺を押さえ込むことができる。 <span
+    class="math display">\[\hat{\rho}_{{\bf q}} = \sum_i \mbox{e}^{-i
+    {\bf q}\cdot{\bf r}_i}\]</span> であったから、 <span
+    class="math display">\[\begin{aligned}
+      \hat{\rho}_{{\bf q}}\hat{\rho}_{-{\bf q}} &amp;=  \sum_i \sum_j
+    \mbox{e}^{-i {\bf q}\cdot{\bf r}_i} \mbox{e}^{i {\bf q}\cdot{\bf
+    r}_j} \\
+      &amp;=  N + \sum_{i \neq j} \mbox{e}^{-i {\bf q}\cdot({\bf
+    r}_i-{\bf r}_j)}
+    \end{aligned}\]</span> である。ここで、新たなポテンシャル<span
+    class="math inline">\(\Psi({\bf r})\)</span>を <span
+    class="math display">\[\Psi({\bf r}) = \int \frac{\mbox{d}{\bf
+    q}}{(2\pi)^2} g({\bf q}) \mbox{e}^{i {\bf q}\cdot{\bf r}}\]</span>
+    と定義すると、式(<a href="#eq_gauss" data-reference-type="ref"
+    data-reference="eq_gauss">[eq_gauss]</a>)の左辺は <span
+    class="math display" id="eq_Psi">\[\frac{1}{N} \sum_{{\bf q}} g({\bf q})
+    \left&lt; \hat{\rho}_{{\bf q}}\hat{\rho}_{-{\bf q}} \right&gt;
+      =
+      \Psi(0) + \frac{1}{N} \sum_{i \neq j} \left&lt; \Psi({\bf
+    r}_i-{\bf r}_j) \right&gt;
+      \]</span> と書き換えることができる。 式(<a
+    href="#eq_Psi" data-reference-type="ref"
+    data-reference="eq_Psi">[eq_Psi]</a>)の第一項、<span
+    class="math inline">\(\Phi(0)\)</span>は定数であるし、第二項は <a
+    href="#sec_modpotential" data-reference-type="ref"
+    data-reference="sec_modpotential">3.2</a>節と同様な議論により、このポテンシャルで相互作用する
+    自由エネルギーを定義し、その差として押さえ込める。 ただし、<a
+    href="#sec_modpotential" data-reference-type="ref"
+    data-reference="sec_modpotential">3.2</a>節の場合と異なり、ガウス分布なので
+    <span class="math inline">\(\Phi\)</span>が熱力学平均を持てば<span
+    class="math inline">\(\Psi\)</span>による平均も存在するため、ここで
+    ポテンシャルに新たな制限はつかない。 以上から、 <span
+    class="math display" id="eq_last">\[C&#39;&#39; \ge \rho_{{\bf K}}^2 \sum_{{\bf
+    k}&lt;{\bf K}_0/2} \frac{1}{k^2}
+      \]</span> を得た。ただし <span
+    class="math inline">\(C&#39;&#39; = 1/C&#39; \left(\Psi(0) +
+    \frac{1}{N} \sum_{i \neq j} \left&lt; \Psi({\bf r}_i-{\bf r}_j)
+    \right&gt;\right)\)</span> であり、<span
+    class="math inline">\(C&#39;\)</span>、<span
+    class="math inline">\(C&#39;&#39;\)</span>ともに熱力学極限で定数に収束する。
+    式(<a href="#eq_last" data-reference-type="ref"
+    data-reference="eq_last">[eq_last]</a>)の和が二次元なので二重積分であることに気をつけて、
+    さらに<span class="math inline">\(N_1\)</span>及び<span
+    class="math inline">\(N_2\)</span>がともに<span
+    class="math inline">\(N^{1/2}\)</span>のオーダーであれば、 <span
+    class="math display">\[\rho_{{\bf K}} \le
+    \frac{1}{\sqrt{\ln{N}}}\]</span> を得る。
+    一次元の場合は、一重積分であるから、 <span
+    class="math display">\[\rho_{\bf K} \le \frac{1}{\sqrt{N}}\]</span>
+    となる。</p>
+    <h1 data-number="4" id="まとめ"><span
+    class="header-section-number">4</span> まとめ</h1>
+    <p>以上を簡単にまとめてみよう。
+    証明に、熱力学平均が定義できることと、
+    自由エネルギーが示量性であることを用いているので、
+    適用できる系の相互作用ポテンシャルに制限がつく。
+    したがって、自己重力系のような<span
+    class="math inline">\(1/r\)</span>ポテンシャルには
+    この証明は適用できないし、微分不可能なポテンシャルを持つ
+    剛体粒子には適用できるかどうかも非自明である。</p>
+    <p>自由エネルギーが定義できるような系においても、
+    証明でちょっとずらしたポテンシャル<span
+    class="math inline">\(\Phi_{\lambda}\)</span>による
+    熱力学平均が収束する条件が必要である。
+    しかし、こちらは普通のポテンシャル(たとえばLennard-Jones
+    PotentialやHertzian contact force) なら通常満たすであろう。</p>
+    <p>さらに、熱力学極限を取ったときに分母が発散するので <span
+    class="math inline">\(\rho_{{\bf K}}\)</span>、すなわちBragg
+    ピークの大きさが制限を受ける、というのが
+    証明の結果だが、発散が対数発散という遅い発散なので、 Bragg
+    ピークも対数的に小さくなる程度の弱い制限しか受けない。
+    したがって、天文学的に大きな系で無い限り、Braggピークは実験的に観測できるだろう。
+    この制限の弱さは、別の秩序、たとえば配向秩序(directional
+    order)をゆるす。
+    したがって、二次元粒子系において隣接配向秩序(Bond-orientational
+    Order)が
+    長距離秩序を持つというKosterlitz-Thouless-Halperin-Nelson-Young理論は
+    Merminの定理と矛盾しない。</p>
+    <p>一般のポテンシャルの場合は粒子数に対して対数的に秩序が制限されたが、
+    調和ポテンシャルの場合はベキ的に制限される。このように、
+    条件を絞れば秩序に関するより厳しい制限を得る。</p>
+    <div class="thebibliography">
+<h2>参考文献</h2>
+<ol>
+  <li id="ref-Jancovici" value="1">B. Jancovici, Phys. Rev. Lett. {\bf 19} 20 (1967).</li>
+  <li id="ref-Mermin" value="2">N. D. Mermin, Phys. Rev. {\bf 176} 250 (1968).</li>
+  <li id="ref-Fisher" value="3">M. E. Fisher, Arch. Rational Mech. Anal. {\bf 17}, 337 (1964).</li>
+</ol>
+</div>
+    <section id="footnotes" class="footnotes footnotes-end-of-document"
+    role="doc-endnotes">
+    <hr />
+    <ol>
+    <li
+    id="fn1"><p>なんでこんなものを代入しようと思いついたのかが不思議である。<a
+    href="#fnref1" class="footnote-back"
+    role="doc-backlink">↩︎</a></p></li>
+    <li id="fn2"><p><span class="math inline">\(\left&lt; D
+    \right&gt;_\lambda\)</span>は<span
+    class="math inline">\(\lambda\)</span>に関して増加関数なので、
+    積分の中を<span class="math inline">\(\left&lt; D
+    \right&gt;_0\)</span>で置き換えても
+    不等号の向きは変わらない。すると被積分関数が定数であるから積分を実行できて、
+    <span class="math inline">\(\left&lt; D
+    \right&gt;\)</span>の上限を自由エネルギーで抑えることができる。
+    そして、自由エネルギーが示量性であることから<span
+    class="math inline">\(\left&lt; D \right&gt;/N\)</span>を
+    定数で押さえ込む、というのが全体のロジックである。<a href="#fnref2"
+    class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+    <li id="fn3"><p>両辺を<span
+    class="math inline">\(N\)</span>で割っている。<a href="#fnref3"
+    class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+    </ol>
+    </section>
+  </article>
+</body>
+</html>

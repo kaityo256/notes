@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>古典核生成論の簡単なまとめ</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script>
+    MathJax = {
+      tex: {
+        macros: {
+          diff: ["{\\mathrm d}", 0],
+          ave: ["\\left\\langle #1 \\right\\rangle", 1],
+          v: ["{\\bf #1}", 1],
+          dH: ["\\displaystyle \\frac{\\partial H}{\\partial #1}", 1],
+          e: ["{\\mathrm e}", 0],
+          hr: ["\\hat{\\rho}", 0]
+        },
+        tags: 'ams'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <nav><a href="../index.html">&larr; 目次に戻る</a></nav>
+  <article>
+    <h1 data-number="1" id="沸騰とは"><span
+    class="header-section-number">1</span> 沸騰とは</h1>
+    <p>ある温度や圧力において、液相単相の平衡状態が実現されているとする。
+    これを、定圧条件で温度を上げる、定積条件で密度を下げるなどの操作を行い、
+    気液共存線を横切ると液相は準安定状態となり、気泡核生成が起きる。
+    その後、定圧条件では最終的に気相単相が、定積条件では気液共存状態が実現される(図<a
+    href="#fig_boil" data-reference-type="ref"
+    data-reference="fig_boil">[fig_boil]</a>)。</p>
+    <figure class="multi-image" id="fig_boil">
+  <div class="image-row">
+    <img src="images/pconst.png" style="width:50%">
+    <img src="images/vconst.png" style="width:50%">
+  </div>
+  <figcaption>図1: 沸騰を起こすための相図上の操作。(左)定圧条件。定圧条件では気液共存状態は実現しないため、 気液共存領域は相図線となる。圧力を固定し、温度を急にあげることで気液共存線を越え、気泡生成が始まる。 (右)定温条件。定温条件においては、ある温度領域にわたって気液共存状態が実現する。 そこで液体単相が安定である条件から、急に密度を下げることで気液共存線を越える。</figcaption>
+</figure>
+    <p>一般に温度を上げることにより起きる発泡現象を沸騰(boiling)、
+    減圧により生じる発泡現象をキャビテーション(cavitaion)と呼び、区別される。
+    シミュレーションによる実現が簡単なのは、定積条件において急減圧することである。
+    これはある瞬間に粒子の半径を減少させることで実現する。これは密度を下げることに
+    対応するが、物理的には急減圧を行っていることと等しい。急減圧を行った直後、
+    液体は準安定状態となり、化学ポテンシャルは同じ温度、同じ密度における気体よりも
+    高くなる(図<a href="#fig_chem" data-reference-type="ref"
+    data-reference="fig_chem">1</a>)。しかし、液相から気相にいたるにはエネルギーバリア<span
+    class="math inline">\(\Delta G\)</span>があり、
+    すぐに気泡は発生できない(図<a href="#fig_chem2"
+    data-reference-type="ref"
+    data-reference="fig_chem2">2</a>)。こういった準安定状態からの核生成を扱う理論が
+    古典核生成論(Classical Nucleation Theory)、略してCNTである。</p>
+    <div class="center">
+    <figure>
+    <img src="images/chem.png" id="fig_chem" style="width:48%"
+    alt=" (左)沸騰が起きる際の化学ポテンシャルの振る舞い。高圧側では、液相は気相よりも 化学ポテンシャルが低く、液相が平衡状態として実現する(右側黒丸)。そこから 急減圧すると、液相は準安定状態となる(左側白丸)。 " />
+    <figcaption aria-hidden="true">図2: 
+    (左)沸騰が起きる際の化学ポテンシャルの振る舞い。高圧側では、液相は気相よりも
+    化学ポテンシャルが低く、液相が平衡状態として実現する(右側黒丸)。そこから
+    急減圧すると、液相は準安定状態となる(左側白丸)。 </figcaption>
+    </figure>
+    </div>
+    <h1 data-number="2" id="古典核生成論"><span
+    class="header-section-number">2</span> 古典核生成論</h1>
+    <p>準安定状態からの緩和の理論は、1870年代後半にGibbsらによってはじまったが、
+    現在、いわゆる古典核生成論と呼ばれるものは、1900年代前半に
+    FarkasやZeldovichらによってまとめられたものである。
+    その後、様々な修正を受けたが、その本質はあまり変わっていないように見える。
+    そこで、まずZeldovichの理論をフォローする。計算の表式をやや現代的に改めたが、
+    内容はほぼ参考文献<a href="#ref-CNT">[1]</a>による。
+    なお、以下は過飽和蒸気における「液滴生成」の理論であることに注意したい。
+    気泡生成への適用は後述する。</p>
+    <div class="center">
+    <figure>
+    <img src="images/chem2.png" id="fig_chem2" style="width:90%"
+    alt=" もともとは液相が安定な状態(左)であったところから、急減圧することで 液相は準安定、気相が安定な状態となる(右)。 しかし、エネルギーバリア(右図\Delta G)があるためにすぐには気泡は発生できない。 " />
+    <figcaption aria-hidden="true">図3: 
+    もともとは液相が安定な状態(左)であったところから、急減圧することで
+    液相は準安定、気相が安定な状態となる(右)。
+    しかし、エネルギーバリア(右図<span class="math inline">\(\Delta
+    G\)</span>)があるためにすぐには気泡は発生できない。 </figcaption>
+    </figure>
+    </div>
+    <p>過飽和蒸気について考える。過飽和蒸気とは、本来その温度における平衡圧力<span
+    class="math inline">\(P_0\)</span>に比べて 高い圧力<span
+    class="math inline">\(P\)</span>を持つ蒸気のことで、放置しておくと液滴を生成することで圧力を下げようとする。
+    ある時刻<span class="math inline">\(t\)</span>において、内部に<span
+    class="math inline">\(n\)</span>個の粒子を含む液滴クラスターの単位体積あたりの数(クラスター濃度)を<span
+    class="math inline">\(c(n,t)\)</span>としよう。 さらに<span
+    class="math inline">\(n\)</span>個の粒子を含む液滴が、単位時間あたりに粒子を一つ獲得する確率を
+    <span class="math inline">\(W_+(n)\)</span>、一つ放出する確率を<span
+    class="math inline">\(W_-(n)\)</span>とする。
+    いま、過飽和度が低いとして、粒子の放出および獲得は一つずつしか行われないと仮定すると、
+    <span
+    class="math inline">\(c(n,t)\)</span>についてのマスター方程式は
+    <span class="math display">\[\frac{\partial c}{\partial t} = -
+    \left[ W_+(n) + W_-(n) \right] c(n,t)
+        + W_+(n-1)  c(n-1,t) + W_-(n+1) c(n+1,t)\]</span> と書ける。
+    ここで、平衡状態におけるクラスター濃度を<span
+    class="math inline">\(c_0(n)\)</span>とすると、 詳細釣合の条件から、
+    <span class="math display">\[W_+ c_0(n) = W_- c_0(n+1)\]</span>
+    が成立する。ここから<span
+    class="math inline">\(W_-\)</span>を消去して、 <span
+    class="math display">\[\frac{\partial c}{\partial t} = W_+(n) c_0(n)
+        \left\{
+        \frac{c(n+1)}{c_0(n+1)} - \frac{c(n)}{c_0(n)}
+        \right\}
+        - W_+(n-1) c_0(n-1)
+        \left\{
+        \frac{c(n)}{c_0(n)} - \frac{c(n-1)}{c_0(n-1)}
+        \right\}\]</span> が得られ、さらに<span
+    class="math inline">\(n\)</span>に関して連続近似すれば、 <span
+    class="math display" id="eq_continuum">\[\frac{\partial c}{\partial t} =
+    \frac{\partial }{\partial n}
+        \left(W_+ c_0
+        \frac{\partial c/c_0}{\partial n}
+        \right)  \]</span> を得る。ここで、<span
+    class="math inline">\(n\)</span>に関する流れ場(flux)を<span
+    class="math inline">\(J(n)\)</span>とすれば、 連続の式は <span
+    class="math display" id="eq_contiuum2">\[\frac{\partial c}{\partial t} =
+    -\frac{\partial J}{\partial n} \]</span>
+    と定義される。式(<a href="#eq_continuum" data-reference-type="ref"
+    data-reference="eq_continuum">[eq_continuum]</a>)および(<a
+    href="#eq_contiuum2" data-reference-type="ref"
+    data-reference="eq_contiuum2">[eq_contiuum2]</a>)を見比べれば、
+    流れ場<span class="math inline">\(J(n)\)</span>は <span
+    class="math display">\[J(n) =-\left(W_+ c_0
+        \frac{\partial c/c_0}{\partial n}
+        \right)\]</span> で与えられることがわかる。 また、式(<a
+    href="#eq_continuum" data-reference-type="ref"
+    data-reference="eq_continuum">[eq_continuum]</a>)は、 <span
+    class="math display">\[\frac{\partial c}{\partial t} = -
+    \frac{\partial}{\partial n}
+        \left(
+        \displaystyle \frac{W_+}{c_0} \frac{\partial c_0}{\partial n}
+        - W_+ \frac{\partial}{\partial n}
+        \right) c\]</span> と書くこともできる<a href="#fn1"
+    class="footnote-ref" id="fnref1"
+    role="doc-noteref"><sup>1</sup></a>。 これは、力の場 <span
+    class="math display" id="eq_f">\[f = \frac{W_+}{c_0} \frac{\partial
+    c_0}{\partial n} = W_+ \frac{\partial \ln c_0}{\partial n}
+    \]</span> におけるランダムウォークの式と等価である。</p>
+    <p>ここで、平衡状態のクラスター濃度<span
+    class="math inline">\(c_0\)</span>について考える。
+    単独の粒子を基準とし、そこから<span
+    class="math inline">\(n\)</span>個の粒子を含むクラスターを作るためのGibbs自由エネルギーを
+    <span class="math inline">\(\Delta
+    G(n)\)</span>としよう。このとき、平衡状態の濃度は <span
+    class="math display" id="eq_c0">\[c_0(n) = c_0(1) \exp \left( -\beta \Delta G
+    \right) \]</span> となるであろう。ただし<span
+    class="math inline">\(c_0(1)\)</span>とはモノマーの密度、すなわち
+    過飽和蒸気濃度に他ならない。この濃度の式(<a href="#eq_c0"
+    data-reference-type="ref"
+    data-reference="eq_c0">[eq_c0]</a>)を力の場の式(<a href="#eq_f"
+    data-reference-type="ref"
+    data-reference="eq_f">[eq_f]</a>)に代入すれば、 <span
+    class="math display">\[f = - W_+ \beta \frac{\partial \Delta
+    G}{\partial n}\]</span>
+    を得る。すなわち、クラスターサイズの時間発展は、
+    Gibbsの自由エネルギーをポテンシャルとする中での
+    ランダムウォークであると解釈できる<a href="#fn2"
+    class="footnote-ref" id="fnref2"
+    role="doc-noteref"><sup>2</sup></a>。</p>
+    <p>一般に、<span
+    class="math inline">\(n\)</span>個の粒子を含むクラスターを作るためのエネルギー<span
+    class="math inline">\(\Delta G\)</span>は、 ある大きさ<span
+    class="math inline">\(n^*\)</span>で最大値を<span
+    class="math inline">\(\Delta G^*\)</span>とる(図<a
+    href="#fig_deltaG" data-reference-type="ref"
+    data-reference="fig_deltaG">3</a>)。 クラスターは<span
+    class="math inline">\(\Delta
+    G\)</span>をポテンシャルとするランダムウォークをするのであるから、
+    <span
+    class="math inline">\(n^*\)</span>よりも小さなクラスターはより小さく、
+    大きなクラスターはより大きくなろうとする。
+    このサイズが臨界核サイズ(Critical Nucleation Size)と呼ばれ、
+    その大きさを見積もるのがCNTの目的である。</p>
+    <div class="center">
+    <figure>
+    <img src="images/deltaG.png" id="fig_deltaG" style="width:48%"
+    alt=" n個の粒子を含むクラスターを形成するためのGibbs 自由エネルギー。 あるサイズn^*において最大値\Delta G^*を取る。 クラスターはこのGibbs自由エネルギーをポテンシャルとする ランダムウォークをする。 " />
+    <figcaption aria-hidden="true">図4:  <span
+    class="math inline">\(n\)</span>個の粒子を含むクラスターを形成するためのGibbs
+    自由エネルギー。 あるサイズ<span
+    class="math inline">\(n^*\)</span>において最大値<span
+    class="math inline">\(\Delta G^*\)</span>を取る。
+    クラスターはこのGibbs自由エネルギーをポテンシャルとする
+    ランダムウォークをする。 </figcaption>
+    </figure>
+    </div>
+    <h1 data-number="3" id="核生成率"><span
+    class="header-section-number">3</span> 核生成率</h1>
+    <p>過飽和蒸気において、その過飽和度を維持していれば、臨界核サイズよりも
+    大きなクラスターは無限に成長を続ける。したがってクラスターサイズに
+    平衡状態は存在しない。我々が興味のある量は、臨界核サイズに達する
+    クラスターの生成速度である。これを核生成率(Nulceation Rate)<span
+    class="math inline">\(J_s\)</span>と呼ぼう。
+    以下、核生成率を求める。</p>
+    <p>クラスター濃度に関する連続の式(<a href="#eq_continuum"
+    data-reference-type="ref"
+    data-reference="eq_continuum">[eq_continuum]</a>)からはじめよう。
+    定常状態であれば、<span class="math inline">\(\partial c/\partial t
+    = 0\)</span>であるから、 定常流れを<span
+    class="math inline">\(J_s\)</span>とすると、 <span
+    class="math display">\[J_s = - W_+ (n) c_0(n) \frac{\mathrm
+    d}{\mathrm dn}\left( \frac{c_s(n)}{c_0(n)} \right)=
+    \mbox{const.}\]</span> となる。ただし<span
+    class="math inline">\(c_s(n)\)</span>は定常密度であり、時間に依存しないため<span
+    class="math inline">\(n\)</span>に関する全微分となる<a href="#fn3"
+    class="footnote-ref" id="fnref3"
+    role="doc-noteref"><sup>3</sup></a>。
+    これは変数分離型になっており、積分が可能である。 <span
+    class="math inline">\(W_+ c_0\)</span>を移項すると <span
+    class="math display">\[-\frac{J_s}{W_+(n) c_0(n)} = \frac{\mathrm
+    d}{\mathrm dn } \left(\frac{c_s(n)}{c_0(n)} \right)\]</span>
+    両辺を<span class="math inline">\(n\)</span>で<span
+    class="math inline">\((1,\infty)\)</span>の区間で積分すれば、 <span
+    class="math display">\[-J_s \int_1^{\infty} \frac{\mathrm dn}{W_+(n)
+    c_0(n)}  =  \left[ \frac{c_s(n)}{c_0(n)} \right]_1^\infty\]</span>
+    <span
+    class="math inline">\(c_s(1)\)</span>、すなわち過飽和蒸気の定常密度はほぼ平衡密度<span
+    class="math inline">\(c_0(1)\)</span>に等しいであろう。 また、<span
+    class="math inline">\(n \rightarrow \infty\)</span> の極限で<span
+    class="math inline">\(c_s/c_0 \rightarrow 0\)</span>となるであろう。
+    したがって右辺の値は<span
+    class="math inline">\(-1\)</span>となり、<span
+    class="math inline">\(J_s\)</span>について解くと、 <span
+    class="math display" id="eq_Js">\[J_s = \left[ \int_1^\infty \frac{\mathrm
+    dn}{W_+(n) c_0(n)} \right]^{-1} \]</span> を得る。<span
+    class="math inline">\(c_0\)</span>は<span
+    class="math inline">\(n=n^*\)</span>において最小値<span
+    class="math inline">\(c_0(n^*)\)</span>を取り、そのピークは非常に鋭いため、
+    積分に寄与するのは<span
+    class="math inline">\(n=n^*\)</span>のまわりのみである。
+    そこで、<span
+    class="math inline">\(n=n^*\)</span>のまわりの鞍点近似によって積分を評価する。
+    <span class="math inline">\(c_0(n)\)</span>を<span
+    class="math inline">\(n^*\)</span>のまわりで二次まで展開すると、
+    <span class="math display">\[c_0(n) = c(1) \exp\left[
+            - \beta \Delta G^*
+            -\frac{\beta}{2} \left(
+            \frac{\partial^2 \Delta G}{\partial n^2}
+            \right)_{n=n^*} (n-n^*)^2
+            \right]\]</span> これを式(<a href="#eq_Js"
+    data-reference-type="ref"
+    data-reference="eq_Js">[eq_Js]</a>)に代入すれば、ガウス積分により積分が評価できて、最終的に
+    <span class="math display">\[J_s = Z W_+(n^*) c_0(n^*)\]</span>
+    を得る<a href="#fn4" class="footnote-ref" id="fnref4"
+    role="doc-noteref"><sup>4</sup></a>。ただし、<span
+    class="math inline">\(Z\)</span>はZeldovich定数 <span
+    class="math display">\[Z = \left[-
+            \frac{\beta}{2\pi}
+            \left(
+            \frac{\partial^2 \Delta G}{\partial n^2}
+            \right)_{n=n^*}
+            \right]^{1/2}\]</span> である。<span
+    class="math inline">\(\Delta
+    G\)</span>は上に凸な関数であるから、一般に<span
+    class="math inline">\(Z&gt;0\)</span>である。</p>
+    <p><span class="math inline">\(W_+(n^*)
+    c_0(n^*)\)</span>は、平衡状態における臨界クラスターサイズの
+    液滴の成長速度である。液滴生成率<span
+    class="math inline">\(J_s\)</span>は、それにZeldovich定数をかけた形になっている。
+    したがって、Zeldovich定数は、非平衡度を表すパラメータであると解釈できる。</p>
+    <p>なお、Kinetic Theory によれば、<span
+    class="math inline">\(W_+\)</span>は <span
+    class="math display">\[W_+(n) = A(n) \frac{P \beta^{1/2}}{\sqrt{2\pi
+    m}}\]</span> と見積もることができる。ただし<span
+    class="math inline">\(A(n)\)</span>は<span
+    class="math inline">\(n\)</span>粒子クラスターの面積、<span
+    class="math inline">\(P\)</span>は 過飽和蒸気圧である。</p>
+    <h1 data-number="4" id="ギブスエネルギーの評価"><span
+    class="header-section-number">4</span> ギブスエネルギーの評価</h1>
+    <p>核生成率<span
+    class="math inline">\(J_s\)</span>は、臨界核サイズ<span
+    class="math inline">\(n^*\)</span>と、そのサイズにおけるGibbs自由エネルギー<span
+    class="math inline">\(\Delta G^*\)</span>、
+    その周りでの二次の微分係数によって評価される。 <span
+    class="math inline">\(n^*\)</span>のもっとも簡単な見積もりは、気相と液相の化学ポテンシャル差<span
+    class="math inline">\(\Delta \mu\)</span>と、 界面張力<span
+    class="math inline">\(\gamma\)</span>を用いて <span
+    class="math display">\[\Delta G^* = \gamma A(n) - n \Delta
+    \mu\]</span> と見積もるものである(Gibbsの近似)。 ただし<span
+    class="math inline">\(A(n)\)</span>は<span
+    class="math inline">\(n\)</span>粒子クラスターの表面積である。
+    この表式ではクラスターの並進運動および回転の自由度を無視している。
+    これらの自由度も考慮すると、 <span class="math display">\[\Delta G =
+    \gamma A(n) - n \Delta \mu -k_B T \ln \frac{n^{3/2}}{\lambda^3}
+        - k_B T \ln \frac{a v_b n^{5/2}}{\lambda^3}\]</span>
+    となる。ただし<span class="math inline">\(\lambda = h/\sqrt{2 \pi m
+    k_B T}\)</span>はド・ブロイ波長であり、 <span
+    class="math inline">\(a\)</span>は幾何学因子(球なら4.76)、<span
+    class="math inline">\(v_b\)</span>は粒子の排除体積である。
+    ただ、並進および回転の寄与は、液滴の場合には無視できないが、気泡の場合にはあまり重要ではないと思われる。
+    また、界面張力<span
+    class="math inline">\(\gamma\)</span>を、界面が平坦な場合の界面張力<span
+    class="math inline">\(\gamma_\infty\)</span>を用いて
+    近似することをcapillarity approximationと言う。</p>
+    <h1 data-number="5" id="気泡生成"><span
+    class="header-section-number">5</span> 気泡生成</h1>
+    <p>液滴生成と気泡生成の大きな違いは、気泡生成の際に気泡がまわりの液体に仕事を
+    することである。その仕事の分だけ気泡生成に必要な仕事は減るため、結果として
+    液滴生成よりも生成率が高くなる。以下、その仕事を見積もる<a href="#ref-CNTBubble">[2]</a>。</p>
+    <p>準安定状態にある液体(圧力<span
+    class="math inline">\(P_L\)</span>)において、体積<span
+    class="math inline">\(V_G\)</span>、面積<span
+    class="math inline">\(A\)</span>の 気泡を作る最小仕事<span
+    class="math inline">\(W\)</span>を考える。
+    まず、同じ大きさの空洞を作るためには、界面を作るための仕事<span
+    class="math inline">\(\gamma A\)</span>が必要となる。
+    しかし、実際には気泡が膨張する際に仕事をするため、必要な最小仕事<span
+    class="math inline">\(W\)</span>は<span class="math inline">\(\gamma
+    A\)</span>よりも小さくなる。 気泡を作る仕事<span
+    class="math inline">\(W\)</span>が最小となるのは、気泡が液体にする仕事が最大となるときであり、
+    それは気泡生成過程が可逆過程であるときである。
+    そこで、気泡が液体にする最大仕事を、等圧過程、等温過程の二つのステップに分けて考える。</p>
+    <p>まず、等圧過程を考える。液体から粒子が可逆的に気化するためには、
+    その温度における飽和蒸気圧<span
+    class="math inline">\(P_V\)</span>で気化しなければならない。
+    圧力<span
+    class="math inline">\(P_L\)</span>の液体から、飽和蒸気圧<span
+    class="math inline">\(P_V\)</span>で体積<span
+    class="math inline">\(V_V\)</span>の気泡を作るための仕事<span
+    class="math inline">\(W_1\)</span>は <span
+    class="math display">\[W_1 = (P_V - P_L)V_V\]</span>
+    である。ここで、液体は準安定状態にあるため、飽和蒸気圧よりも液体の圧力の方が小さい(<span
+    class="math inline">\(P_V&gt;P_L\)</span>)。</p>
+    <p>次に、先ほど作成された気泡内部の粒子数<span
+    class="math inline">\(n\)</span>を保ったまま、等温過程で変化させる。
+    このとき、液体の圧力<span class="math inline">\(P_L\)</span>のもとで
+    体積を<span class="math inline">\(V_V\)</span>から<span
+    class="math inline">\(V_G\)</span>まで変化させる仕事<span
+    class="math inline">\(W_2\)</span>は <span
+    class="math display">\[\begin{aligned}
+        W_2 &amp;=  \int_{V_V}^{V_G} (P-P_L)\mathrm dV \\
+        &amp;=  P_G V_G - P_V V_V - \int_{P_V}^{P_G}V \mathrm dP -
+    P_L(V_G - V_V) \\
+        &amp;=  P_G V_G - P_V V_V - P_L V_G + P_L V_V - n (\mu_G -
+    \mu_L)
+    \end{aligned}\]</span> ただし、化学ポテンシャル<span
+    class="math inline">\(\mu\)</span>と圧力<span
+    class="math inline">\(P\)</span>のルジャンドル変換 <span
+    class="math inline">\(n \mathrm d\mu = V \mathrm
+    dP\)</span>、および飽和蒸気圧<span
+    class="math inline">\(P_V\)</span>にある気体の化学ポテンシャルは
+    液体の化学ポテンシャル<span
+    class="math inline">\(\mu_L\)</span>と等しいことを用いた。</p>
+    <p>最終的に、面積<span class="math inline">\(A\)</span>、体積<span
+    class="math inline">\(V_G\)</span>を持つ気泡を作る仕事<span
+    class="math inline">\(W\)</span>として <span
+    class="math display" id="eq_workforbubble">\[\begin{aligned}
+        W &amp;=  \gamma A - W_1 - W_2\\
+        &amp;=  \gamma A - V_G (P_G - P_L) - V_G \rho_G (\mu_L - \mu_G)
+    
+    \end{aligned}\]</span> を得る。ただし<span
+    class="math inline">\(\rho_G\)</span>は<span class="math inline">\(n
+    \equiv V_G \rho_G\)</span>で定義される気泡内の粒子数密度である。
+    右辺第一項が界面を作るための仕事、第二項が気泡が膨張する際にする仕事、第三項が
+    化学ポテンシャル差である。この仕事を気泡生成の自由エネルギー<span
+    class="math inline">\(\Delta G\)</span>と
+    同一視するのが、気泡生成の際のGibbs近似である。 式(<a
+    href="#eq_workforbubble" data-reference-type="ref"
+    data-reference="eq_workforbubble">[eq_workforbubble]</a>)には気泡内の圧力<span
+    class="math inline">\(P_G\)</span>が含まれるが、
+    成長しつつある気泡内の圧力<span
+    class="math inline">\(P_G\)</span>は体積の関数として一意には決まらない。
+    そこで、一般には力学平衡 <span class="math display">\[P_G = P_L +
+    \frac{2\gamma}{r}\]</span> を仮定する。ただしこれは半径<span
+    class="math inline">\(r\)</span>の球における界面張力と圧力の釣り合いの式、
+    いわゆるYoung-Laplaceの式である<a href="#fn5" class="footnote-ref"
+    id="fnref5" role="doc-noteref"><sup>5</sup></a>。
+    力学平衡は化学平衡よりも早く達成されるであろうという仮定はもっともらしいが、
+    この仮定が実際に成り立っているかどうかのの確認は難しい。</p>
+    <div class="center">
+    <figure>
+    <img src="images/pv.png" id="fig_pv" style="width:50%"
+    alt=" 気泡が生成する際、液体にする最大仕事。まず、飽和蒸気圧P_Vにおいて 体積を0からV_Vにする(W_1)。次に、内部の粒子数を保ったまま 体積をV_G、圧力をP_Gにする(W_2)。 " />
+    <figcaption aria-hidden="true">図5: 
+    気泡が生成する際、液体にする最大仕事。まず、飽和蒸気圧<span
+    class="math inline">\(P_V\)</span>において 体積を<span
+    class="math inline">\(0\)</span>から<span
+    class="math inline">\(V_V\)</span>にする(<span
+    class="math inline">\(W_1\)</span>)。次に、内部の粒子数を保ったまま
+    体積を<span class="math inline">\(V_G\)</span>、圧力を<span
+    class="math inline">\(P_G\)</span>にする(<span
+    class="math inline">\(W_2\)</span>)。 </figcaption>
+    </figure>
+    </div>
+    <h1 data-number="6" id="まとめと古典論の問題点"><span
+    class="header-section-number">6</span> まとめと古典論の問題点</h1>
+    <p>以上、簡単に古典核生成論についてまとめた。古典核生成論の本質は
+    核生成に必要なGibbs自由エネルギー<span class="math inline">\(\Delta
+    G\)</span>が上に凸なシングルピークを持つ関数であることを
+    用いた鞍点近似にあり、<span class="math inline">\(\Delta
+    G\)</span>の具体的な形は必要としていない。 この<span
+    class="math inline">\(\Delta
+    G\)</span>を可逆仕事から見積もるのがGibbs描像であり、
+    液滴の場合には界面張力と化学ポテンシャル差、気泡生成の場合にはそれに加えて
+    気泡が膨張する際に液体する仕事の効果を取り入れている。</p>
+    <p>Gibbs近似により気泡生成の仕事を見積もるためには、準安定状態の液体と気体の間の
+    界面張力を測定する必要がある。しかし、準安定状態であれば界面は安定に存在できないため、
+    一般にはその温度における平衡状態の界面張力の値が用いられるようである。
+    さらに、界面張力の曲率依存性も無視できない。界面張力の見積もりがわずかにずれても、
+    気泡生成率の予測値が数桁のオーダーで変化することも理論の構築を難しくしている。</p>
+    <p>数値計算による気泡生成率の評価も精力的に行われている。たとえば
+    Lennard-Jones粒子により、気泡生成までの待ち時間から気泡生成率を求めた計算では
+    古典核生成論による予測から８桁ずれたという報告がある<a href="#ref-Kinjo">[3]</a>。</p>
+    <p>ここで紹介した古典論では、気泡生成に必要な可逆仕事のみを考慮したが、実際には
+    潜熱による発熱、流体の効果、気泡間相互作用などが効いていると思われる。
+    これらについては古くから議論があり、様々な研究が行われているが、まだ良く分かっていないようだ。</p>
+    <div class="thebibliography">
+<h2>参考文献</h2>
+<ol>
+  <li id="ref-CNT" value="1">J. Feder, K. C. Russel, J. Lothe, and G. M. Pound, Adv. Phys. {\bf 15}, 111 (1966).</li>
+  <li id="ref-CNTBubble" value="2">M. Blander and J. L. Katz, AIChE. J, <strong>21</strong>, 833 (1975).</li>
+  <li id="ref-Kinjo" value="3">T. Kinjo and M. Matsumoto, Fluid Phase Equilibria, <strong>144</strong> 343 (1998).</li>
+</ol>
+</div>
+    <section id="footnotes" class="footnotes footnotes-end-of-document"
+    role="doc-endnotes">
+    <hr />
+    <ol>
+    <li id="fn1"><p>式(<a href="#eq_continuum" data-reference-type="ref"
+    data-reference="eq_continuum">[eq_continuum]</a>)右辺の内側の微分を実行した。<a
+    href="#fnref1" class="footnote-back"
+    role="doc-backlink">↩︎</a></p></li>
+    <li id="fn2"><p>これはオーバーダンプした
+    Langevin方程式とのアナロジーから理解される。<a href="#fnref2"
+    class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+    <li id="fn3"><p>定常流れ<span
+    class="math inline">\(J_s\)</span>は<span
+    class="math inline">\(n\)</span>依存性を持たないことに注意。式(<a
+    href="#eq_contiuum2" data-reference-type="ref"
+    data-reference="eq_contiuum2">[eq_contiuum2]</a>)において、定常状態であるから
+    左辺はゼロとなる。すると<span
+    class="math inline">\(J\)</span>を<span
+    class="math inline">\(n\)</span>で微分するとゼロとなるから、<span
+    class="math inline">\(J\)</span>は<span
+    class="math inline">\(n\)</span>依存性を持たない。 これを<span
+    class="math inline">\(J_s\)</span>と定義している。<a href="#fnref3"
+    class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+    <li id="fn4"><p>ここで、<span
+    class="math inline">\(W_+\)</span>はクラスターの面積<span
+    class="math inline">\(n^{2/3}\)</span>程度の <span
+    class="math inline">\(n\)</span>依存性しかないため、ほぼ定数であるとして積分の外に出した。<a
+    href="#fnref4" class="footnote-back"
+    role="doc-backlink">↩︎</a></p></li>
+    <li id="fn5"><p>気泡内外の圧力差<span class="math inline">\(\Delta P
+    = P_G - P_L\)</span>を 界面張力 <span class="math inline">\(2\gamma
+    /r\)</span> で支えているというつりあいの式。<a href="#fnref5"
+    class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+    </ol>
+    </section>
+  </article>
+</body>
+</html>
