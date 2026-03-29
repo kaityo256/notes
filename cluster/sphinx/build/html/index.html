@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>スピン系のクラスターアルゴリズムについての私的覚書 &mdash; My Project 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            My Project
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">スピン系のクラスターアルゴリズムについての私的覚書</a><ul>
+<li><a class="reference internal" href="#id2">はじめに</a></li>
+<li><a class="reference internal" href="#id3">マルコフ連鎖モンテカルロ法</a></li>
+<li><a class="reference internal" href="#id5">ボンド変数の導入</a></li>
+<li><a class="reference internal" href="#swendsen-wang">Swendsen-Wangアルゴリズム</a></li>
+<li><a class="reference internal" href="#wolff">Wolffアルゴリズム</a></li>
+<li><a class="reference internal" href="#id9">その他の系でのクラスターアルゴリズム</a><ul>
+<li><a class="reference internal" href="#q-potts">Q-状態 Potts模型</a></li>
+<li><a class="reference internal" href="#id10">相互作用が非一様なイジング模型</a></li>
+<li><a class="reference internal" href="#id11">連続スピン系</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id13">クラスターアルゴリズムによる加速</a><ul>
+<li><a class="reference internal" href="#potts">Potts模型におけるドメインウォールの解消</a></li>
+<li><a class="reference internal" href="#xy">古典XY模型における渦の解消</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">終わりに</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">My Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">スピン系のクラスターアルゴリズムについての私的覚書</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>スピン系のクラスターアルゴリズムについての私的覚書<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dd class="field-odd"><p>渡辺宙志</p>
+</dd>
+</dl>
+<section id="id2">
+<h2>はじめに<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<p>このノートは、渡辺がスピン系のクラスターアルゴリズムの理解、実装につまずいた経験をまとめたものである。
+特に実装していて「あれ？ボンドをつなぐ確率は<span class="math notranslate nohighlight">\(1 - \mathrm{e}^{-\beta}\)</span>だっけ、それとも
+<span class="math notranslate nohighlight">\(1 - \mathrm{e}^{-2\beta}\)</span>だっけ？」と迷うことがあったので、そんな場合にきちんと分配関数の変形から導けるようになることを目的としている。
+専門家ではないので、内容の正確さについては保証できない。</p>
+</section>
+<section id="id3">
+<h2>マルコフ連鎖モンテカルロ法<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
+<p>相互作用が一様な強磁性イジング模型を考える。
+ハミルトニアンは以下の通り。</p>
+<div class="math notranslate nohighlight">
+\[H = -J \sum_{\left&lt;i, j\right&gt;} \sigma_i \sigma_j\]</div>
+<p>右辺第一項は相互作用項であり、和は相互作用する隣接スピン間でとる。
+以下、系の全てのスピンの状態を一つ決めた状態を<span class="math notranslate nohighlight">\(\left\{ \sigma_i \right\}\)</span>と略記し、
+スピン状態と呼ぶ。分配関数は以下のようになる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+  Z &amp;=&amp; \sum_{\{\sigma_i\}} \exp\left(\beta \sum_{\left&lt;i, j\right&gt;} \sigma_i \sigma_j \right) \label{eq_Z}
+\end{aligned}\]</div>
+<p>ただし、<span class="math notranslate nohighlight">\(\beta \equiv J/(k_B T)\)</span>であり、最初の和は全てのスピン状態について取ることを意味している。
+スピン変数<span class="math notranslate nohighlight">\(\sigma_i\)</span>は1か-1の値を取るものとする。
+全てのスピン状態について和を取れば分配関数は厳密に求められるが、スピンの数が増えるごとに
+状態数が指数関数的に増加するため、現実的には実行できない。
+そこで、モンテカルロ法で何かの物理量<span class="math notranslate nohighlight">\(A\)</span>を計算することを考える。
+モンテカルロ法では、なんらかの確率的な方法により、スピン状態<span class="math notranslate nohighlight">\(\left\{\sigma_i  \right\}\)</span>が、
+ボルツマン重み<span class="math notranslate nohighlight">\(\exp\left( \beta H(\left\{\sigma_i  \right\})\right)\)</span>に比例して出現するようにして、
+その上で物理量<span class="math notranslate nohighlight">\(A\)</span>の期待値を計算する、という手続きを踏む。</p>
+<p>このとき、全くランダムにスピン状態を生成し、それらをボルツマン重みをつけて
+平均を取っても原理的には物理量の期待値は求まるが、全体の状態数に比べ、物理量に寄与する状態数は極端に少ないため、
+極めて効率が悪くなる、
+そこで、ある状態<span class="math notranslate nohighlight">\(\left\{\sigma_i  \right\}\)</span>から、別の状態<span class="math notranslate nohighlight">\(\left\{\sigma_i  \right\}'\)</span>を
+特定の方法で次々と作り出すことで、最終的にボルツマン重みに比例して状態を出現させる方法が
+マルコフ連鎖モンテカルロ法(Markov-Chain Monte Carlo, MCMC
+method)である。
+新しいスピン状態の作り方は、詳細釣り合いを満たしていればどのような作り方をしても良いが <a class="footnote-reference brackets" href="#id15" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>、多くの場合はMetropolis法か熱浴法が用いられる。</p>
+<p>あるスピン<span class="math notranslate nohighlight">\(i\)</span>に着目し、他のスピンを全て固定した状態において、
+スピン<span class="math notranslate nohighlight">\(i\)</span>が上向きである重みと下向きである重みを考える。
+その重みに従い、現在の状態を考慮しフリップするかどうかを確率的に決めるのが
+Metropolis法、現在の状態に関係なく、新しい状態を決めるのが熱浴法である。
+いずれにせよ、一度の操作で変更されるスピンは一つだけであり、Single-Spin-Flipなどと呼ばれる。
+スピン<span class="math notranslate nohighlight">\(i\)</span>の状態が変わると、当然ながらスピン<span class="math notranslate nohighlight">\(i\)</span>と相互作用しているスピンの重みが変わる。
+従って、スピン<span class="math notranslate nohighlight">\(i\)</span>の更新が終了するまでは、次のスピンの更新ができない。
+これは、スピンが間接的に全て相互作用していることから来る制約であるから、
+なんらかの形でスピンの相互作用を切って、独立な塊に分けてしまえば、
+一度に多数のスピンを更新できるのではないか、そのような方法を実現するのが
+クラスターアルゴリズムである。</p>
+</section>
+<section id="id5">
+<h2>ボンド変数の導入<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h2>
+<p>分配関数(<a class="reference external" href="#eq_Z">[eq_Z]</a>)を以下のように変形する。まず、指数関数の中の和を外に出して積にする。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+  Z &amp;=&amp; \sum_{\{\sigma_i\}} \exp\left(\beta \sum_{\left&lt;i, j\right&gt;} \sigma_i \sigma_j \right) \\
+  &amp;=&amp;  \sum_{\{\sigma_i\}} \prod_{\left&lt;i, j\right&gt;}  \exp\left(\beta \sigma_i \sigma_j \right)
+\end{aligned}\end{split}\]</div>
+<p>重み<span class="math notranslate nohighlight">\(\exp (\beta \sigma_i \sigma_j)\)</span>は、二つのスピン変数の値(スピンの向き)が等しい時と異なるときで異なるので、
+クロネッカーのデルタを用いて次のように書き直せる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+  \exp (\beta \sigma_i \sigma_j) &amp;=&amp; \mathrm{e}^{-\beta} + \delta_{\sigma_i, \sigma_j} \left( \mathrm{e}^{\beta} - \mathrm{e}^{-\beta}  \right)   \\
+  &amp;=&amp;  \mathrm{e}^{\beta} \left[\mathrm{e}^{-2\beta}  +  \delta_{\sigma_i, \sigma_j}(1 - \mathrm{e}^{-2\beta}) \right] \\
+  &amp;=&amp; \mathrm{e}^{\beta} \left[(1-p) +  p \delta_{\sigma_i, \sigma_j} \right]
+\end{aligned}\end{split}\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(p \equiv 1 - \mathrm{e}^{-2 \beta}\)</span>である。
+さらに、<span class="math notranslate nohighlight">\(0\)</span>または<span class="math notranslate nohighlight">\(1\)</span>の値を取る変数<span class="math notranslate nohighlight">\(b_{ij}\)</span>を導入し、
+クロネッカーのデルタに関する恒等式</p>
+<div class="math notranslate nohighlight">
+\[x + y = \sum_b^{0,1} x \delta_{b,0} + y \delta_{b,1}\]</div>
+<p>を用いて書き直すと、</p>
+<div class="math notranslate nohighlight">
+\[\exp (\beta \sigma_i \sigma_j) =
+  \sum_{b_{ij}}  \mathrm{e}^{\beta} \left[(1-p) \delta_{b_{ij},0} +  p \delta_{\sigma_i, \sigma_j} \delta_{b_{ij},1} \right]\]</div>
+<p>となる。 最終的に分配関数は以下の形に書きなおされる <a class="footnote-reference brackets" href="#id16" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>。</p>
+<div class="math notranslate nohighlight">
+\[Z =  \sum_{\{\sigma_i\}} \sum_{\{b_{ij}\}}  \prod_{\left&lt;i, j\right&gt;}   \mathrm{e}^{\beta} \left[(1-p) \delta_{b_{ij},0} +  p \delta_{\sigma_i, \sigma_j} \delta_{b_{ij},1} \right]\]</div>
+<p>ここで、新たに導入された変数<span class="math notranslate nohighlight">\(b_{ij}\)</span>を、スピン<span class="math notranslate nohighlight">\(i\)</span>とスピン<span class="math notranslate nohighlight">\(j\)</span>を結ぶボンドが「接続されている状態(active)」
+であるか、「接続されていない状態(inactive)」であるかを示す、ボンドに住む変数であると解釈する。
+すると、もともと系の自由度はスピンだけであったが、新たにボンドという自由度が導入されたことになる。
+クラスターアルゴリズムとは、スピン変数とボンド変数を交互に更新するアルゴリズムである。</p>
+<p>もう少しボンド変数の意味を考察しよう。本質的には<span class="math notranslate nohighlight">\(x + y\)</span>の形に書かれたボルツマン重みに対し、
+<span class="math notranslate nohighlight">\(x \delta_{b,0}+ y \delta_{b,1}\)</span>と変形することで、
+inactive(<span class="math notranslate nohighlight">\(b=0\)</span>)なら<span class="math notranslate nohighlight">\(x\)</span>を、active(<span class="math notranslate nohighlight">\(b=1\)</span>)なら<span class="math notranslate nohighlight">\(y\)</span>を選択する新たな自由度<span class="math notranslate nohighlight">\(b\)</span>を導入している。
+<span class="math notranslate nohighlight">\(b\)</span>について和を取れば<span class="math notranslate nohighlight">\(x + y\)</span>に戻るため、この変形自体は等価変形である。
+ここで、inactiveの際に選ばれる重み<span class="math notranslate nohighlight">\(x\)</span>に、スピン変数の自由度が含まれないように取る。
+これは、ボンド変数がinactiveであるときには、相互作用エネルギー<span class="math notranslate nohighlight">\(J\)</span>がゼロになったと解釈して良い。
+相互作用エネルギーがゼロであるのだから、そのボンドの相互作用は「切れて」おり、
+その両端にあるスピンは、お互いの向きが自分のボルツマン重みに直接影響を与えなくなる。
+従って、切れたボンドにより「孤立した」クラスタは、まわりの影響を考慮せずに自由に更新して良いことになる。
+こうして、新たにボンド変数を導入することで、相互作用を「切る」ことがクラスターアルゴリズムのキモである。</p>
+</section>
+<section id="swendsen-wang">
+<h2>Swendsen-Wangアルゴリズム<a class="headerlink" href="#swendsen-wang" title="Permalink to this heading"></a></h2>
+<p>まず、あるスピン状態が与えられ、固定されたとしよう。その状態でボンド変数をボルツマン重みに従って更新することを考える。
+スピン<span class="math notranslate nohighlight">\(i\)</span>とスピン<span class="math notranslate nohighlight">\(j\)</span>を結ぶボンドに関する重みは以下の通り。</p>
+<div class="math notranslate nohighlight">
+\[S_{ij} = \mathrm{e}^{\beta} \left[(1-p) \delta_{b_{ij},0} +  p \delta_{\sigma_i, \sigma_j} \delta_{b_{ij},1} \right]\]</div>
+<p>ボンドの両端のスピンがそろっていない場合、重みは以下のようになる。</p>
+<div class="math notranslate nohighlight">
+\[S_{ij}= \mathrm{e}^{\beta} (1-p) \delta_{b_{ij},0}\]</div>
+<p>これは、両端のスピンが揃っていない時には、ボンドがactiveである(<span class="math notranslate nohighlight">\(b_{ij}=1\)</span>)である重みはゼロであることを意味する。
+従って、両端のスピンがそろっていなければ、ボンドは常にinactiveでなければならない。</p>
+<p>次に、ボンドの両端のスピンが揃っている場合には、重みは以下のようになる。</p>
+<div class="math notranslate nohighlight">
+\[S_{ij}= \mathrm{e}^{\beta} \left[(1-p) \delta_{b_{ij},0} +  p \delta_{b_{ij},1} \right]\]</div>
+<p>これは、ボンドがactiveである重みが<span class="math notranslate nohighlight">\(p\)</span>、inactiveである重みが<span class="math notranslate nohighlight">\(1-p\)</span>に比例することを意味する。
+従って、ボンド両端のスピンが揃っている場合、ボンド変数は確率<span class="math notranslate nohighlight">\(p\)</span>でactive、確率<span class="math notranslate nohighlight">\(1-p\)</span>でinactiveにすれば良い。
+これは、スピン状態が固定された条件下において、ボンド変数を熱浴法にて更新したことになっている。
+熱浴法であるから、過去のボンド状態に関係なく、新たな状態を与える。
+ここで重要なことは、ボンド変数はお互いに相互作用をしていない、ということである。
+ボンド変数の重みは両端のスピン状態によってのみ決まり、あるボンド変数の状態が変わっても、別のボンド変数の重みを変えない。従って、全てのボンド変数はお互いを気にすることなく、両端のスピン状態により与えられた局所的な重みにのみ従って新たな状態を与えることができる。この手続きを全てのボンドについて実行することで、あるスピン状態において、新たなボンド状態が作られる。</p>
+<p>次に、先に与えられたボンド状態を固定し、スピン状態を更新することを考える。
+ボンド<span class="math notranslate nohighlight">\(ij\)</span>に関する重みは以下のとおり。</p>
+<div class="math notranslate nohighlight">
+\[S_{ij} = \mathrm{e}^{\beta} \left[(1-p) \delta_{b_{ij},0} +  p \delta_{\sigma_i, \sigma_j} \delta_{b_{ij},1} \right]\]</div>
+<p>ボンド変数<span class="math notranslate nohighlight">\(b_{ij}\)</span>がinactiveである場合(<span class="math notranslate nohighlight">\(b_{ij}=0\)</span>)には、重みは以下のようになる。</p>
+<div class="math notranslate nohighlight">
+\[S_{ij} = \mathrm{e}^{\beta} (1-p)\]</div>
+<p>この重みにはスピン変数<span class="math notranslate nohighlight">\(\sigma_i\)</span>が含まれていない。これは、ボンドが切れているスピン同士は独立であることを意味する。
+従って、activeなボンドでつながったスピン全てを反転させても、ボルツマン重みの値は変わらない。
+ボルツマン重みが等しい二つの状態を熱浴法で更新する場合、それぞれ<span class="math notranslate nohighlight">\(1/2\)</span>の確率で選べば良い。
+以上から、「activeなボンドでつながったスピンの塊(activeボンドの定義から全て同じ向きを向いている)を、
+確率<span class="math notranslate nohighlight">\(1/2\)</span>で全て上向きか下向きにすれば良い。
+ボンドが繋がっていない、独立したスピンクラスタは、お互いに影響を与えないので、それぞれ独立に新しい
+スピン状態を与えて良い。</p>
+<p>まとめると、クラスターアルゴリズムは以下のような手順となっている。</p>
+<ol class="arabic simple">
+<li><p>「ボンド状態の更新」
+隣り合うスピンが同じ向きである場合、そのボンドを確率<span class="math notranslate nohighlight">\(p \equiv 1 - \mathrm{e}^{-2 \beta}\)</span>で
+activeにする。それ以外のボンドは全てinactiveにする。</p></li>
+<li><p>「クラスタリング」
+activeなボンドでつながったスピンをクラスタとしてまとめる。activeなボンドをもっていないスピンはそれで一つのクラスタとみなす。</p></li>
+<li><p>「スピン状態の更新」それぞれのクラスタごとに独立して新たなスピン状態を与える。イジングモデルであれば、確率<span class="math notranslate nohighlight">\(1/2\)</span>で上向きか下向きかを与える。</p></li>
+<li><p>以上を繰り返す</p></li>
+</ol>
+<p>以上の手続きをSwendsen-Wangアルゴリズムと呼ぶ:raw-latex:<cite>cite{SW}</cite>。
+それぞれ、ボンド状態の更新時はスピン状態を固定し、スピン状態を更新するときにはボンド状態を固定しているのがポイントである。
+変形された分配関数はもとのモデルの分配関数と等価であるから、実現されるスピン状態はもとのモデルと同じボルツマン重みに従う。
+また、有限温度である場合には、スピンを全て繋がない(ボンドが全てinactiveになる)確率が存在する。
+この時、全てのスピンが独立に新たな値を取るため、全ての状態に遷移する可能性があり、エルゴード性も満たされている。</p>
+</section>
+<section id="wolff">
+<h2>Wolffアルゴリズム<a class="headerlink" href="#wolff" title="Permalink to this heading"></a></h2>
+<p>Wolffアルゴリズム:raw-latex:<a href="#id7"><span class="problematic" id="id8">`</span></a>cite{Wolff}`は、もともとSwendsen-Wangアルゴリズムの連続スピン系への拡張として提案されたが、
+実は離散スピン系の更新アルゴリズムもSwendsen-Wangアルゴリズムと異なっている。
+ここでは、まずイジング模型にWolffアルゴリズムを適用する方法を説明する。</p>
+<p>Swendsen-Wangアルゴリズムでは、ボンド状態もスピン状態も熱浴法で更新する。
+そこで、スピン状態だけMetropolisで更新することを考える。
+まず、ボンド状態の更新が終わり、スピンがクラスタにわかれた状態とする。
+Metropolis法では、同じ重みを持つ状態間の遷移確率は100%である。すなわち、
+あるスピンの上向きと下向きのボルツマン重みが同じだった場合、そのスピンが選ばれたら
+Metropolis法なら必ず向きを反転する。
+Swendsen-Wangでは、全てのスピンのクラスタについて新たな状態を与えたが、
+それをMetropolisでやると、全てのスピンを反転するだけになり意味がない。
+そこで、クラスタを一つだけ選び、そのクラスタのスピンを反転することを考えよう。
+手順は以下のようになる。</p>
+<ol class="arabic simple">
+<li><p>「ボンド状態の更新」
+隣り合うスピンが同じ向きである場合、そのボンドを確率<span class="math notranslate nohighlight">\(p \equiv 1 - \mathrm{e}^{-2 \beta}\)</span>で
+activeにする。それ以外のボンドは全てinactiveにする。</p></li>
+<li><p>「クラスタリング」
+activeなボンドでつながったスピンをクラスタとしてまとめる。activeなボンドをもっていないスピンはそれで一つのクラスタとみなす(ここまではSwendsen-Wangと同じ)。</p></li>
+<li><p>「スピン状態の更新」更新するクラスターを、その体積(クラスタに含まれるスピン数)に比例して選び、選ばれたクラスタに含まれるスピンを全て反転する。</p></li>
+<li><p>以上を繰り返す</p></li>
+</ol>
+<p>さて、このアルゴリズムには無駄が多いので、改良することを考えよう。
+まず、「体積に比例してクラスタを選ぶ」手続きについては、単純に「系の中のスピンを一つ任意に選び、そのスピンを含むクラスタが選ばれたとする」とすれば良い。このようにすれば、クラスタが選ばれる確率が体積に比例することは自明であろう。</p>
+<p>次に、選ばれたクラスタしか操作しないため、それ以外のボンド変数の情報は不要である。
+そこで、選ばれたクラスタのボンド情報のみ与えることを考える。
+具体的には、以下のような手続きになろう。</p>
+<ol class="arabic simple">
+<li><p>スピンを一つ、一様に選ぶ(<span class="math notranslate nohighlight">\(N\)</span>個のスピンを含む系であれば、確率<span class="math notranslate nohighlight">\(1/N\)</span>で選ぶ)。</p></li>
+<li><p>そのスピンにつながるボンド全てについて、隣接するスピンが揃っていればボンドを確率<span class="math notranslate nohighlight">\(p\)</span>でactiveに、
+そうでなければボンドをinactiveにする。</p></li>
+<li><p>activeになったボンドの先にあるスピンについて、同じ操作を繰り返す。ただし、すでに
+activeかinactiveか判定がなされたボンドについては除外する。</p></li>
+<li><p>以上の操作を再帰的に繰り返し、activeなボンドで接続されたスピンクラスタがこれ以上成長しなくなったら(クラスタの境界にあるボンドが全て判定済みになったら)手続きを終了し、完成したクラスタに含まれるスピンを全て反転する</p></li>
+</ol>
+<p>Swendsen-WangでもWolffでも「ボンド状態を更新し、その後にスピン状態を更新する」という手続きは同じであるが、
+Swengsen-Wangは全てのボンド状態を更新するのに対し、Wolffは必要なボンド状態のみ更新する点、
+およびSwendsen-Wangはスピン状態の更新が熱浴法であるのに対し、
+WolffはMetropolisを用いている点が異なる。逆に言えば、違いはその点だけで、
+本質的な点はどちらも変わらない。</p>
+</section>
+<section id="id9">
+<h2>その他の系でのクラスターアルゴリズム<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h2>
+<section id="q-potts">
+<h3>Q-状態 Potts模型<a class="headerlink" href="#q-potts" title="Permalink to this heading"></a></h3>
+<p>Q-状態強磁性Potts模型を考える。スピン変数は<span class="math notranslate nohighlight">\(\sigma_i\)</span>とし、<span class="math notranslate nohighlight">\(0\)</span>から<span class="math notranslate nohighlight">\(Q-1\)</span>までの値を取るものとしよう。
+相互作用エネルギーは、隣り合うスピンが同じであれば<span class="math notranslate nohighlight">\(-J\)</span>、異なる場合は<span class="math notranslate nohighlight">\(0\)</span>としよう。
+するとハミルトニアンは以下の様に表される。</p>
+<div class="math notranslate nohighlight">
+\[H = -J \sum_{\left&lt;i,j\right&gt;} \delta_{\sigma_i,\sigma_j}\]</div>
+<p>イジング模型の場合と同様に、分配関数を変形してボンド変数を導入しよう。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+  Z &amp;=&amp; \sum_{\{\sigma_i\}} \exp\left(\beta \sum_{\left&lt;i,j\right&gt;} \delta_{\sigma_i,\sigma_j} \right)\\
+  &amp;=&amp; \sum_{\{\sigma_i\}} \prod_{\left&lt;i,j\right&gt;}  \exp\left(\beta \delta_{\sigma_i,\sigma_j} \right)\\
+  &amp;=&amp; \sum_{\{\sigma_i\}} \prod_{\left&lt;i,j\right&gt;} \left[  \delta_{\sigma_i,\sigma_j} (\mathrm{e}^{\beta} -1) +1 \right] \\
+  &amp;=&amp; \sum_{\{\sigma_i\}} \prod_{\left&lt;i,j\right&gt;} \mathrm{e}^{\beta} \left[  \delta_{\sigma_i,\sigma_j} (1 - \mathrm{e}^{-\beta}) +\mathrm{e}^{-\beta} \right] \\
+  &amp;=&amp; \sum_{\{\sigma_i\}}  \prod_{\left&lt;i,j\right&gt;} \mathrm{e}^{\beta} \left[  p \delta_{\sigma_i,\sigma_j} + (1-p)\right] \qquad  (p \equiv 1 - \mathrm{e}^{-\beta}) \\
+  &amp;=&amp; \sum_{\{\sigma_i\}} \sum_{\{b_{ij}\}}  \prod_{\left&lt;i,j\right&gt;} \mathrm{e}^{\beta} \left[  p \delta_{\sigma_i,\sigma_j}  \delta_{b_{ij},1}  + (1-p)  \delta_{b_{ij},0} \right]
+\end{aligned}\end{split}\]</div>
+<p>ここから、イジング模型の場合と全く同様に、隣接するスピン変数の値が同じである場合には
+確率<span class="math notranslate nohighlight">\(p \equiv 1 - \mathrm{e}^{-\beta}\)</span>でボンドをactiveに、それ以外ではボンドをinactiveにして、
+activeなボンドでつながっている同じクラスタのスピン変数の値を<span class="math notranslate nohighlight">\(0\)</span>から<span class="math notranslate nohighlight">\(Q-1\)</span>から一様に選べば良いことがわかる。
+同様に、イジング模型においても、スピン変数を<span class="math notranslate nohighlight">\(\sigma_i = \{-1,1\}\)</span>ではなく<span class="math notranslate nohighlight">\(\sigma_i = \{0,1\}\)</span>としている場合には、
+ボンドをつなぐ確率を<span class="math notranslate nohighlight">\(p \equiv 1 - \mathrm{e}^{-\beta}\)</span>とすれば良い。</p>
+</section>
+<section id="id10">
+<h3>相互作用が非一様なイジング模型<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<p>クラスターアルゴリズムを連続スピン系に適用する準備として、相互作用の強さ<span class="math notranslate nohighlight">\(J\)</span>がボンドによって
+異なる模型を考える。スピン<span class="math notranslate nohighlight">\(i\)</span>とスピン<span class="math notranslate nohighlight">\(j\)</span>をつなぐボンドの相互作用を<span class="math notranslate nohighlight">\(J_{ij}\)</span>とすると、
+ハミルトニアンは以下のように表される。</p>
+<div class="math notranslate nohighlight">
+\[H = - \sum_{\left&lt;i, j\right&gt;} J_{ij} \sigma_i \sigma_j\]</div>
+<p>あとは相互作用が一様な場合と全く同様にボンド変数<span class="math notranslate nohighlight">\(b_{ij}\)</span>を導入し、分配関数を変形すると、</p>
+<div class="math notranslate nohighlight">
+\[Z =  \sum_{\{\sigma_i\}} \sum_{\{b_{ij}\}}  \prod_{\left&lt;i, j\right&gt;}   \mathrm{e}^{\beta_{ij}} \left[(1-p_{ij}) \delta_{b_{ij},0} +  p_{ij} \delta_{\sigma_i, \sigma_j} \delta_{b_{ij},1} \right]\]</div>
+<p>となる。ただし、<span class="math notranslate nohighlight">\(\beta_{ij} \equiv J_{ij}/k_B T\)</span>および<span class="math notranslate nohighlight">\(p_{ij} \equiv 1 - \exp(-2 \beta_{ij})\)</span>である。
+すなわち、ボンドの接続確率として、これまでは一様な確率<span class="math notranslate nohighlight">\(p\)</span>を使っていたのに対し、
+ボンドの相互作用に応じて異なる確率<span class="math notranslate nohighlight">\(p_{ij}\)</span>を使えばよい。</p>
+</section>
+<section id="id11">
+<h3>連続スピン系<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
+<p>スピン変数<span class="math notranslate nohighlight">\(\mathbf{\sigma}_i\)</span>がベクトル量であり、その内積によりエネルギーが与えられるハミルトニアンを考える。</p>
+<div class="math notranslate nohighlight">
+\[H = -J \sum_{\left&lt;i, j\right&gt;}  \mathbf{\sigma}_i \cdot \mathbf{\sigma}_j\]</div>
+<p>さて、一般の向きをもった単位ベクトル<span class="math notranslate nohighlight">\(\mathbf{r}\)</span>を考え、そのベクトルに平行な成分と垂直な成分に
+スピンを分解する。</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{\sigma}_i = \mathbf{\sigma}_i^\parallel + \mathbf{\sigma}_i^\perp\]</div>
+<p>ただし</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{\sigma}_i^\parallel \equiv (\mathbf{\sigma}_i \cdot \mathbf{r}) \mathbf{r}\]</div>
+<p>である。
+新しいイジング型変数<span class="math notranslate nohighlight">\(\va.pngilon_i \equiv \mathrm{sign}(\mathbf{\sigma}_i \cdot \mathbf{r})\)</span>を用いると、</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{\sigma}_i =  \va.pngilon_i |\mathbf{\sigma}_i \cdot \mathbf{r}| +  \mathbf{\sigma}_i^\perp\]</div>
+<p>であるから、</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{\sigma}_i \cdot \mathbf{\sigma}_j  =  |\mathbf{\sigma}_i \cdot \mathbf{r}|  |\mathbf{\sigma}_j \cdot \mathbf{r}|  \va.pngilon_i  \va.pngilon_j + \mathbf{\sigma}_i^\perp \cdot \mathbf{\sigma}_j^\perp\]</div>
+<p>これをハミルトニアンに代入すると、</p>
+<div class="math notranslate nohighlight">
+\[H = -J \sum_{\left&lt;i, j\right&gt;}   |\mathbf{\sigma}_i \cdot \mathbf{r}|  |\mathbf{\sigma}_j \cdot \mathbf{r}|  \va.pngilon_i  \va.pngilon_j  -J \sum_{\left&lt;i, j\right&gt;} \mathbf{\sigma}_i^\perp \cdot \mathbf{\sigma}_j^\perp \label{eq_wolff}\]</div>
+<p>さて、ここでスピンの<span class="math notranslate nohighlight">\(\mathbf{r}\)</span>に関して垂直な成分を固定し、平行な成分のみを自由度だと思うことにする。
+すると、ハミルトニアン(<a class="reference external" href="#eq_wolff">[eq_wolff]</a>)の右辺第二項は定数となる。
+さらに<span class="math notranslate nohighlight">\(J_{ij} \equiv J  |\mathbf{\sigma}_i \cdot \mathbf{r}|  |\mathbf{\sigma}_j \cdot \mathbf{r}|\)</span>と定義すると、</p>
+<div class="math notranslate nohighlight">
+\[H = -\sum_{\left&lt;i, j\right&gt;} J_{ij}\va.pngilon_i  \va.pngilon_j  + \mathrm{const.}\]</div>
+<p>となる。これは相互作用が非一様なイジング模型に等価であるから、これまでと同様に
+クラスターアルゴリズムが適用できる。
+ただしエルゴード性を満たすために、毎回射影軸<span class="math notranslate nohighlight">\(\mathbf{r}\)</span>の方向を取り直さなければならない。
+射影軸を用いてイジング化したスピン系に、Swendsen-Wangアルゴリズムを適用した場合の
+手続きは以下の通り。</p>
+<ol class="arabic simple">
+<li><p>射影軸<span class="math notranslate nohighlight">\(\mathbf{r}\)</span>を選ぶ。ただし<span class="math notranslate nohighlight">\(\mathbf{r}\)</span>は任意の方向を向いた単位ベクトルである。</p></li>
+<li><p>イジング型変数<span class="math notranslate nohighlight">\(\va.pngilon_i \equiv \mathrm{sign}(\mathbf{\sigma}_i \cdot \mathbf{r})\)</span>を計算し、
+隣り合うイジングスピン変数が同じ符号である場合(<span class="math notranslate nohighlight">\(\va.pngilon_i \va.pngilon_j = 1\)</span>)である場合に <a class="footnote-reference brackets" href="#id17" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>、
+確率<span class="math notranslate nohighlight">\(p = 1 - \exp(-2 \beta_{ij})\)</span>でボンドをactiveにする。ただし、<span class="math notranslate nohighlight">\(\beta_{ij} \equiv J_{ij}/k_B T\)</span>、
+<span class="math notranslate nohighlight">\(J_{ij} \equiv J  |\mathbf{\sigma}_i \cdot \mathbf{r}|  |\mathbf{\sigma}_j \cdot \mathbf{r}|\)</span>とする。</p></li>
+<li><p>active なボンドでつながったスピンをクラスタとしてまとめる。</p></li>
+<li><p>それぞれのクラスタごとに独立して新たなイジングスピン変数<span class="math notranslate nohighlight">\(\va.pngilon'_i\)</span>を与える。
+すなわち、新たなスピン変数<span class="math notranslate nohighlight">\(\mathbf{\sigma}'_i\)</span>は、
+<span class="math notranslate nohighlight">\(\mathbf{\sigma}'_i =  \va.pngilon'_i |\mathbf{\sigma}_i \cdot \mathbf{r}| + \mathbf{\sigma}_i^\perp\)</span>
+で与える。</p></li>
+<li><p>以上を繰り返す。</p></li>
+</ol>
+<p>全く同様にしてWolffアルゴリズムも適用できる。
+射影軸を用いてイジング化した模型にSwendsen-Wangアルゴリズムを適用する方法をWolff-Swendsen-Wangアルゴリズムと呼ぶことがある。</p>
+<p>有限温度の場合には、全てのボンドがinactiveになる確率が有限であり、
+さらに射影軸<span class="math notranslate nohighlight">\(\mathbf{r}\)</span>を毎回任意に取ることで、各スピン変数は任意の向きを取る可能性があるため、
+エルゴード性が満たされている。
+ボンド変数が熱浴法、スピン変数が熱浴法ないしMetropolis法で更新されていることで、
+詳細釣り合い条件についても同様に満たされていることはすぐに理解できよう。</p>
+</section>
+</section>
+<section id="id13">
+<h2>クラスターアルゴリズムによる加速<a class="headerlink" href="#id13" title="Permalink to this heading"></a></h2>
+<p>クラスターアルゴリズムがなぜ早いか、ということについて
+「できあがるクラスターのサイズが相関長程度であり、その相関長の及ぶ範囲をまるごと更新できるから」
+という説明がなされることがある。これは正しいのかもしれないが、クラスターアルゴリズムが早いのは、
+単に「一度にたくさんスピンを更新できるから」では無い。
+もし一度にたくさんスピンを更新できることが早い理由であれば、Single-Spin-Flipでも、総数として
+同等の数のスピンを更新すれば同じ程度に緩和させることができるように思えるが、
+実際にはそうなっておらず、クラスターアルゴリズムは緩和を劇的に加速することがわかっている。
+その加速についていくつかの例を挙げてみる。</p>
+<section id="potts">
+<h3>Potts模型におけるドメインウォールの解消<a class="headerlink" href="#potts" title="Permalink to this heading"></a></h3>
+<p>正方格子上の4状態Potts模型を考える。初期状態として図<a class="reference external" href="#fig_initial">1</a>のように、
+各状態がかたまった状態を考えよう。それぞれの「同じスピン状態のかたまり」をドメインと呼び、
+異なるドメイン間の境界をドメインウォールと呼ぶ。
+この状態から、Single-Spin-Flipによる更新と、
+クラスターアルゴリズムによる更新の様子を観察する。システムサイズは<span class="math notranslate nohighlight">\(16 \times 16\)</span>で、
+周期境界条件を課す。逆温度は<span class="math notranslate nohighlight">\(\beta = 3.0\)</span>と、低温に設定する。この温度では
+基底状態は強磁性状態であるため、十分系が緩和すれば全てのスピンが同じ状態になるはずである。
+しかし、強磁性状態に緩和するためにはドメインウォールを解消しなければならない。</p>
+<p>図<a class="reference external" href="#fig_single">[fig_single]</a>に、Single-Spin-Flipによる時間発展を示す。
+更新ルールにはMetropolis法を用いた。スピンを順番に更新していき、
+系の全てのスピンについて試行が終了した段階を1 Monte Carlo Step
+(MCs)と定義する。
+<span class="math notranslate nohighlight">\(16 \times 16\)</span>という比較的小さい系であっても、このようなドメインウォールを
+解消するのにはおよそ600MCs必要であった。これは大きなサイズになればなるほど時間がかかる。
+同様な理由から、完全無秩序状態(全てのスピンの値が乱数で与えられた状態)から緩和させた場合も、
+最終的にドメインウォールが成長するため、その解消に時間がかかる。</p>
+<p>図<a class="reference external" href="#fig_single">[fig_single]</a>に、クラスターアルゴリズムによる時間発展を示す。
+更新ルールにはSwendsen-Wangを用いた。ボンド状態を更新し、クラスタリングし、そしてクラスタごとに
+新しい状態を与えるところまでを1 MCsと定義した。
+系は4MCsでほぼ緩和した。無論、緩和に必要な計算時間もSingle-Spin-Flipよりも圧倒的に短い。
+低温であるため、同じ状態を持つスピンをつなぐボンドは、高い確率でactiveとなる。
+すると、それぞれのドメインはひとつのクラスタとなり、新しい状態が1/4で選ばれる。
+隣のドメインと同じ状態が選ばれた場合、そのドメインはつながり、新たなドメインとなる。
+一度「大きなドメイン」となったドメインがまた分割される確率は低く、
+すぐに系全体がひとつのドメインとなる。
+すなわち、<strong>クラスターアルゴリズムはドメインウォールを選択的に解消する性質を持っている</strong>。
+これが「クラスターアルゴリズムがSingle-Spin-Flipよりも本質的に早い」理由の一つだと思われる。</p>
+<div class="center docutils container">
+<figure class="align-default" id="fig-initial">
+<img alt="初期状態。4状態Potts模型のスピンの状態がそれぞれ別の色で示されている。" src="_images/sw00.png" />
+<figcaption>
+<p><span class="caption-text">初期状態。4状態Potts模型のスピンの状態がそれぞれ別の色で示されている。</span><a class="headerlink" href="#fig-initial" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+</div>
+<div class="center docutils container">
+<p><img alt="image" src="_images/single15.png" /> <img alt="image1" src="_images/single30.png" /> <img alt="image2" src="_images/single45.png" /> <img alt="image3" src="_images/single60.png" /></p>
+</div>
+<div class="center docutils container">
+<p><img alt="image4" src="_images/sw01.png" /> <img alt="image5" src="_images/sw02.png" /> <img alt="image6" src="_images/sw03.png" /> <img alt="image7" src="_images/sw04.png" /></p>
+</div>
+</section>
+<section id="xy">
+<h3>古典XY模型における渦の解消<a class="headerlink" href="#xy" title="Permalink to this heading"></a></h3>
+<p>二次元古典連続スピン系、例えば古典XY模型においては、渦のダイナミクスが重要な役割を果たす。
+低温においては渦のダイナミクスが極めて遅くなり、系の緩和を支配する。
+図<a class="reference external" href="#fig_xy">[fig_xy]</a>の左に、中央に渦を一つ持つ初期状態を示す。
+Potts模型におけるドメインウォールと同様に、
+低温において、Single-Spin-Flipでこの渦を解消するのには極めて時間がかかる。
+しかし、図<a class="reference external" href="#fig_xy">[fig_xy]</a>右に示したように、ある射影軸をとってスピン変数をイジング様変数に落として
+ボンド変数を更新すると、イジング変数が同じ値、すなわち射影軸から見て同じ向きであるスピンが
+繋がれる。その後、左右のクラスタは独立に更新されるため、渦が破壊される。
+すなわち、<strong>連続スピン系におけるクラスターアルゴリズムは渦を選択的に破壊する</strong>。
+系の緩和を支配していた渦を選択的に破壊するのであるから、系の緩和が劇的に早くなるであろうことは理解できよう。</p>
+<div class="center docutils container">
+<p><img alt="image8" src="_images/xy_init.png" /> <img alt="image9" src="_images/xy_sw.png" /></p>
+</div>
+</section>
+</section>
+<section id="id14">
+<h2>終わりに<a class="headerlink" href="#id14" title="Permalink to this heading"></a></h2>
+<p>クラスターアルゴリズムの説明においては、「隣り合うスピンをつないで・・・」という形で語られる事が多い。
+これは、ボンド変数という新たな自由度を導入したことがわかりづらく、僕がクラスターアルゴリズムを理解する障害となっていた。クラスターアルゴリズムにおいては、ボンド変数という自由度を導入し、「スピン状態を固定してボンド状態を更新」
+「ボンド状態を固定してスピン状態を更新」と、系の自由度を部分的に固定することで、更新しようとする自由度の結合を切っていることが本質である(と僕は理解した)。
+また、なぜSwendsen-Wangは確率1/2でクラスターをひっくり返し、Wolffでは必ずひっくり返すのかも理解できなかったが、
+これはそれぞれ熱浴法とMetropolis法であると思えばすっきり理解できる。
+どちらも根本にあるのは「統計的に同じ重みを持つ状態間の遷移」に帰着させ、同じ重みであるから遷移確率を計算する必要がない(熱浴法なら確率1/2で遷移、Metropolisであれば必ず遷移)、というのが本質である。
+また、クラスターアルゴリズムがSingle-Spin-Flipよりも早い理由はさほど自明ではないと思われる。
+クラスターアルゴリズムは、系の中で一番遅い緩和モードを支配する構造を選択的に解消、破壊することがあり、
+その場合には劇的に緩和が早くなる。もちろん系によっては緩和モードがクラスターアルゴリズムの影響を受けづらいことがあり、その場合にはクラスターアルゴリズムによる飛躍的な加速は望めない。
+このノートがクラスターアルゴリズムの理解の助けになれば幸いである。</p>
+<p>本ノートの執筆にあたり、Prof. W.
+Jankeの講義ノート:raw-latex:<cite>cite{JankeNote}</cite>、川島直輝先生及び川島研の皆様との議論を参考にさせていただきました。皆様に感謝いたします。
+なお、本ノートの誤りがある場合は、それは全て渡辺の責任によるものです。</p>
+<div class="thebibliography docutils container">
+<div class="line-block">
+<div class="line">9 J.-S. Wang and R. H. Swendsen, Cluster Monte Carlo algorithms,
+Physica A 167:565 (1990). U. Wolff, Collective Monte Carlo Updating
+for Spin Systems, Physical Review Letters <strong>62</strong> 361 (1989). W.
+Janke, Monte Carlo Simulations of Spin Systems,</div>
+<div class="line"><a class="reference external" href="http://www.physik.uni-leipzig.de">http://www.physik.uni-leipzig.de</a>/j̃anke/Paper/spinmc.pdf</div>
+</div>
+</div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id15" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">1</a><span class="fn-bracket">]</span></span>
+<p>詳細釣合条件は十分条件であるので、この条件を弱めることでより効率的にサンプリングする手法も存在する。</p>
+</aside>
+<aside class="footnote brackets" id="id16" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">2</a><span class="fn-bracket">]</span></span>
+<p>ここで、ボンド変数に関する和<span class="math notranslate nohighlight">\(\sum_{b_{ij}}\)</span>と、相互作用ボンドに関する積<span class="math notranslate nohighlight">\(\prod_{\left&lt;i,j \right&gt;}\)</span>を入れ替えていることに注意。ここでは入れ替えても結果は変わらない。</p>
+</aside>
+<aside class="footnote brackets" id="id17" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id12">3</a><span class="fn-bracket">]</span></span>
+<p>実際にはいちいちイジング様変数を計算せずとも<span class="math notranslate nohighlight">\((\mathbf{\sigma}_i \cdot \mathbf{r})\cdot (\mathbf{\sigma}_j \cdot \mathbf{r})\)</span>の符号をチェックするだけで良い。</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Author.
+      <span class="lastupdated">Last updated on True.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
